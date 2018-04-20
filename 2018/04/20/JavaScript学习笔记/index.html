@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="JavaScript," />
 
 
 
@@ -94,13 +94,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Criya">
-<meta property="og:url" content="http://criya.top/index.html">
+<meta name="description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript学习记录">
+<meta property="og:url" content="http://criya.top/2018/04/20/JavaScript学习笔记/index.html">
 <meta property="og:site_name" content="Criya">
+<meta property="og:description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-04-20T07:45:32.329Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Criya">
+<meta name="twitter:title" content="JavaScript学习记录">
+<meta name="twitter:description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
 
 
 
@@ -129,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://criya.top/"/>
+  <link rel="canonical" href="http://criya.top/2018/04/20/JavaScript学习笔记/"/>
 
 
 
 
 
-  <title>Criya</title>
+  <title>JavaScript学习记录 | Criya</title>
   
 
 
@@ -160,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,274 +248,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://criya.top/2018/04/20/初识HTTP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liang Jiahao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Criya">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/20/初识HTTP/" itemprop="url">初识HTTP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-20T15:40:51+08:00">
-                2018-04-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="初识HTTP"><a href="#初识HTTP" class="headerlink" title="初识HTTP"></a>初识HTTP</h2><p>HTTP全称“超文本传输协议”</p>
-<blockquote>
-<p>超文本传输协议是一种用于分布式、协作式和超媒体信息系统的应用层协议。HTTP是万维网的数据通信的基础。 设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。通过HTTP或者HTTPS协议请求的资源由统一资源标识符来标识。</p>
-</blockquote>
-<p>通俗地讲，http就是互联网中网页间联系的纽带，是我们人为规定的协议，就像我们人类说的语言一样，不同国家的人（制订协议）规定自己国家的语言。在互联网中</p>
-<h3 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h3><p>接下来学习中，将使用linux提供的cURL来模拟用户发送请求到服务器。</p>
-<blockquote>
-<p>cURL是一个利用URL语法在命令行下工作的文件传输工具。它支持文件上传和下载。</p>
-</blockquote>
-<p><code>curl  -v -s https://www.baidu.com</code><br><br>通过curl的 -verbose可以输出这个请求的详细信息，再用-slient屏蔽一些多余的信息。</p>
-<pre><code>&gt; GET / HTTP/1.1            
-&gt; Host: www.baidu.com
-&gt; User-Agent: curl/7.55.1
-&gt; Accept: */*
-&gt;
-</code></pre><p>上面5行就是一个完整的请求header。<br><br>第一行：请求方式 请求路径    协议版本<br><br>第二行：域名<br><br>第三行：请求源<br><br>第四行：表示接受所有的返回<br><br>第五行：表示键值对分界线<br><br>我们还可以通过curl的各种参数构造不一样的请求。</p>
-<h4 id="请求的格式"><a href="#请求的格式" class="headerlink" title="请求的格式"></a>请求的格式</h4><hr>
-<p>1 动词 路径 协议/版本<br><br>2 Key1: value1<br><br>2 Key2: value2<br><br>2 Key3: value3<br><br>2 Content-Type: application/x-www-form-urlencoded<br><br>2 Host: <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a><br><br>2 User-Agent: curl/7.54.0<br><br>3 <br><br>4 要上传的数据<br></p>
-<hr>
-<ul>
-<li>在标准的请求头中，至少要有三部分组成（1，2，3）最多不能超过四部分</li>
-<li>动词有 GET POST PUT PATCH DELETE HEAD OPTIONS 等</li>
-<li>路径（默认为\）包括查询串不包括锚点</li>
-</ul>
-<h4 id="通过chrome获取请求"><a href="#通过chrome获取请求" class="headerlink" title="通过chrome获取请求"></a>通过chrome获取请求</h4><p><img src="https://upload-images.jianshu.io/upload_images/5624859-f7fd1a7c904acbf9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt=""><br>以B站为例，右键点击审查，通过network栏就可以看到所有的请求<br><img src="https://upload-images.jianshu.io/upload_images/5624859-60e361783a99e7cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt=""><br>单击任何一项，就可以查看完整标准的http请求了。</p>
-<h3 id="通过chrome获取响应"><a href="#通过chrome获取响应" class="headerlink" title="通过chrome获取响应"></a>通过chrome获取响应</h3><p>同理，只需要点开Response Headers就可以查看响应<br><img src="https://upload-images.jianshu.io/upload_images/5624859-8a527db7e25a45f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt=""><br>响应的格式与请求的类似</p>
-<hr>
-<p>1 协议/版本号 状态码 状态解释<br>2 Key1: value1<br>2 Key2: value2<br>2 Content-Length: 17931<br>2 Content-Type: text/html<br>3<br>4 要下载的内容</p>
-<hr>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://criya.top/2018/04/20/pagetags/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liang Jiahao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Criya">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/20/pagetags/" itemprop="url">标签</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-20T15:16:45+08:00">
-                2018-04-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -542,9 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/20/JavaScript学习笔记/" itemprop="url">JavaScript学习记录</a></h1>
+          <h1 class="post-title" itemprop="name headline">JavaScript学习记录</h1>
         
 
         <div class="post-meta">
@@ -594,9 +330,7 @@
       
 
       
-        
-          
-            <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。</p>
+        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var s = `hello</span><br><span class="line">world`</span><br><span class="line">s.length // 11</span><br></pre></td></tr></table></figure>
 <h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>null表示空object，undefined表示空非object。</p>
 <p>ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。</p>
@@ -613,8 +347,6 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">!! underfined <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">null</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="string">''</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="number">0</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">NaN</span> <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
 <h4 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h4><p>将任意类型转为Number的几种方法</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Number</span>(<span class="string">'1'</span>) <span class="comment">//1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">'088'</span>) <span class="comment">//88</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">'0.23d'</span>) <span class="comment">//0.23</span></span><br><span class="line"><span class="string">'1'</span> - <span class="number">0</span> <span class="comment">//1</span></span><br><span class="line">+<span class="string">'1'</span> <span class="comment">//1</span></span><br><span class="line">-(-<span class="string">'1'</span>) <span class="comment">//1</span></span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
     
@@ -629,14 +361,36 @@
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/20/pagetags/" rel="prev" title="标签">
+                标签 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -646,10 +400,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -657,6 +412,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -677,8 +436,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -731,6 +499,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Object"><span class="nav-number">1.1.</span> <span class="nav-text">Object</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#why-typeof-nul-object"><span class="nav-number">1.1.1.</span> <span class="nav-text">why typeof nul === object</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换"><span class="nav-number">1.2.</span> <span class="nav-text">类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Boolean"><span class="nav-number">1.2.1.</span> <span class="nav-text">Boolean</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Number"><span class="nav-number">1.2.2.</span> <span class="nav-text">Number</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -844,10 +628,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
