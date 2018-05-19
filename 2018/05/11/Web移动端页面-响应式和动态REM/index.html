@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Liang Jiahao" />
+
+
+
+<meta name="description" content="响应式什么是响应式页面呢？顾名思义响应式页面就是能做出响应的页面，它的页面效果不是定死的，会随着用户的改变而改变。 如何着手响应式有以下几个思考的方向  找一份设计图 使用Media Query 隐藏元素 添加meta viewport 明白手机端交互方式的区别  Media Query是什么Media query 翻译过来就是媒介查询，媒介就是我们查看这个网页的设备。媒介查询源于CSS3，它可以">
+<meta name="keywords" content="css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web移动端页面  --响应式和动态REM">
+<meta property="og:url" content="http://criya.top/2018/05/11/Web移动端页面-响应式和动态REM/index.html">
+<meta property="og:site_name" content="Criya">
+<meta property="og:description" content="响应式什么是响应式页面呢？顾名思义响应式页面就是能做出响应的页面，它的页面效果不是定死的，会随着用户的改变而改变。 如何着手响应式有以下几个思考的方向  找一份设计图 使用Media Query 隐藏元素 添加meta viewport 明白手机端交互方式的区别  Media Query是什么Media query 翻译过来就是媒介查询，媒介就是我们查看这个网页的设备。媒介查询源于CSS3，它可以">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-dd5415d5de88d5e5.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-020c0caa791c0245.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-77f08d6af6022710.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/300">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-16e65b53db92e72b.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2018-05-11T12:00:50.852Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Web移动端页面  --响应式和动态REM">
+<meta name="twitter:description" content="响应式什么是响应式页面呢？顾名思义响应式页面就是能做出响应的页面，它的页面效果不是定死的，会随着用户的改变而改变。 如何着手响应式有以下几个思考的方向  找一份设计图 使用Media Query 隐藏元素 添加meta viewport 明白手机端交互方式的区别  Media Query是什么Media query 翻译过来就是媒介查询，媒介就是我们查看这个网页的设备。媒介查询源于CSS3，它可以">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5624859-dd5415d5de88d5e5.gif?imageMogr2/auto-orient/strip">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Criya" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Web移动端页面  --响应式和动态REM | Criya</title>
+
+<script src="//cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/myIcon.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Liang Jiahao</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/myIcon.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Web移动端页面-响应式和动态REM" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/11/Web移动端页面-响应式和动态REM/" class="article-date">
+      <time datetime="2018-05-11T11:38:44.000Z" itemprop="datePublished">2018-05-11</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Web移动端页面  --响应式和动态REM
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/">css</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="响应式"><a href="#响应式" class="headerlink" title="响应式"></a>响应式</h2><h3 id="什么是响应式页面呢？"><a href="#什么是响应式页面呢？" class="headerlink" title="什么是响应式页面呢？"></a>什么是响应式页面呢？</h3><p>顾名思义响应式页面就是能做出响应的页面，它的页面效果不是定死的，会随着用户的改变而改变。</p>
+<p>如何着手响应式有以下几个思考的方向</p>
+<ol>
+<li>找一份设计图</li>
+<li>使用Media Query</li>
+<li>隐藏元素</li>
+<li>添加meta viewport</li>
+<li>明白手机端交互方式的区别</li>
+</ol>
+<h3 id="Media-Query"><a href="#Media-Query" class="headerlink" title="Media Query"></a>Media Query</h3><h4 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h4><p>Media query 翻译过来就是媒介查询，媒介就是我们查看这个网页的设备。<br>媒介查询源于CSS3，它可以根据用户的设备所具有的某些特征，来提供不同的样式用于显示。</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><h4 id="引用方式"><a href="#引用方式" class="headerlink" title="引用方式"></a>引用方式</h4><p>它的引用方式一共有两种</p>
+<ul>
+<li><link>元素中媒介查询</li>
+<li>样式表中媒介查询</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">link</span>元素中的<span class="selector-tag">CSS</span>媒体查询 <span class="selector-tag">--</span>&gt;</span><br><span class="line">&lt;link rel="stylesheet" media="(max-width: 800px)" href="example.css" /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!<span class="selector-tag">--</span> 样式表中的<span class="selector-tag">CSS</span>媒体查询 <span class="selector-tag">--</span>&gt;</span><br><span class="line">&lt;<span class="selector-tag">style</span>&gt;</span><br><span class="line">@<span class="keyword">media</span> (max-width: <span class="number">600px</span>) &#123;</span><br><span class="line">  <span class="selector-tag">body</span>&#123;</span><br><span class="line">		<span class="attribute">background</span>: red;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>在link中使用媒介查询后，即使不满足样式条件，这个样式文件依然会被下载。</p>
+<h4 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h4><p>媒介查询的条件判断的逻辑操作符只有<code>and</code>,  <code>only</code>, <code>not</code>三种，多个判断条件用<code>()</code>包裹后操作符隔开。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//当媒介最大宽度为800px且是横屏时里面的样式生效</span><br><span class="line">@<span class="keyword">media</span> (max-width: <span class="number">800px</span>) and (orientation: landscape)&#123;</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Mobile-First"><a href="#Mobile-First" class="headerlink" title="Mobile First"></a>Mobile First</h4><p>目前web前端开发项目类型可以分为两种方式，Mobile First 和 Desktop First。Mobile First就是优先开发移动端后开发PC端，后者反之。</p>
+<p>不同的Fist中我们Media Query针对的也不同，Mobile First中，因为我们以移动端为主，所以我们的Media Query应该是针对PC的条件去控制，Desktop Fist则针对移动端设置条件样式。</p>
+<p><a href="https://jsbin.com/qecuvuv/1" target="_blank" rel="noopener">Mobile First Demo</a></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-dd5415d5de88d5e5.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p>这里就用到了一开始所说隐藏</p>
+<h3 id="meta-viewport"><a href="#meta-viewport" class="headerlink" title="meta viewport"></a>meta viewport</h3><p>现在，你已经写好了你的响应式网页，那么已经可以了吗？<br>别急，你离完成仅剩最后一步。</p>
+<p>由于历史的原因，我们的手机在访问网页时，不管你是响应式网页还是非响应式，浏览器都会将你的宽度改为980px。</p>
+<p>这是历史遗留的问题，因为最早的智能手机为了完整的显示一个网页，直接将PC上的网页缩放塞进手机浏览器中，经过调研，发现大部分的网页都是980px左右，所以当我们用手机访问网页时宽度都会被缩放到980px。</p>
+<p>我们只需要加上这样一行代码就可以解决问题</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>width=device-width</code>设置页面宽度为设备宽度。<br><code>user-scalable=no</code>不允许用户缩放<br><code>initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0</code>最大最小默认缩放比例都为1。</p>
+<p>这样我们的响应式网页才完全生效了。</p>
+<h3 id="移动端特点"><a href="#移动端特点" class="headerlink" title="移动端特点"></a>移动端特点</h3><ol>
+<li>没有hover</li>
+<li>有touch</li>
+<li>没有滚动条</li>
+<li>没有IE</li>
+<li>没有resize</li>
+</ol>
+<p>因为移动端是没有hover事件的所以当我们在需要兼容移动端的页面中应该尽量少用hover事件。<br>移动端一般很少监听click事件，都是以touch事件为主，JS没有滑动事件，但是可以通过touch事件模拟<br>没有IE意味着我们可以为所欲为放飞自我，使用最新的CSS和HTML。</p>
+<h3 id="为什么需要响应式？"><a href="#为什么需要响应式？" class="headerlink" title="为什么需要响应式？"></a>为什么需要响应式？</h3><p>当我们需要给不同的设备显示不同网页（样式）时，为什么不可以一开始就写好多个网页再由后端负责根据用户设备来跳转呢？</p>
+<p>我们写响应式需要思考非常多的问题，在一个页面里html css需要考虑很多判断逻辑，这些多出来代码以及设计的时间可能已经能够写一个新的网页，那为什么不一开始就写两个网页就好了呢？</p>
+<p>确实，现在大部分互联公司现在几乎都不会去使用响应式页面。</p>
+<ul>
+<li>博客园：响应式</li>
+<li>百度：非响应式</li>
+<li>谷歌：非响应式</li>
+<li>淘宝：非响应式</li>
+<li>头条：非响应式</li>
+<li>知乎：非响应式</li>
+</ul>
+<p>国内大型公司可以说基本上都是非响应式网页，只有那些交互性较弱比如个人blog，小型企业站点以展示内容为主的网站还会应用响应式设计。</p>
+<h2 id="动态REM自适应"><a href="#动态REM自适应" class="headerlink" title="动态REM自适应"></a>动态REM自适应</h2><p>在了解rem之前需要先知道</p>
+<ul>
+<li>浏览器的默认font-size是16px</li>
+<li>Font-size最优先用户在浏览器中设置的大小，chrome默认最小12px。</li>
+</ul>
+<h3 id="什么是rem？"><a href="#什么是rem？" class="headerlink" title="什么是rem？"></a>什么是rem？</h3><p>rem是众多number单位中的其中一个，它的值为根元素font-size的值。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css">	<span class="selector-tag">body</span>&#123;<span class="attribute">font-size</span>: <span class="number">40px</span>;&#125;</span></span><br><span class="line"><span class="css">	<span class="selector-tag">p</span>&#123;<span class="attribute">font-size</span>: <span class="number">2rem</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  word</span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>!!<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-020c0caa791c0245.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200" alt=""></p>
+<p>因为给<code>body</code>标签设置了40px，所以<code>body</code>里面的内容应该都是40px。但是由于<code>p</code>在后面优先设置了2rem，浏览器的默认font-size为16px，也就是<code>html</code>标签的font-size就是16px，所以现在的hello是32px。</p>
+<p>也就是说rem的根元素的值指的就是<code>html</code> 的font-size的值。</p>
+<h3 id="rem有什么用？"><a href="#rem有什么用？" class="headerlink" title="rem有什么用？"></a>rem有什么用？</h3><p>上面扯了那么多介绍rem，那肯定是有用的。<br>别急，让我细细道来。<br>当我们拿到设计稿，需要写一个手机用的网页时。<img src="https://upload-images.jianshu.io/upload_images/5624859-77f08d6af6022710.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/300" alt=""></p>
+<p>我们是希望在所有的手机上看到的页面都是一个样子的，页面内每个元素在固定的位置。但是按照常规方法，一个样式能做到让所有手机完美（90%）还原设计稿的样子吗？</p>
+<p>答曰：可以，用media写响应式，针对不同的设备宽度，展现不同的样式。</p>
+<p>好的，那让我们打开开发者工具模拟手机看看。</p>
+<ul>
+<li>iPhone X : 375 x 812</li>
+<li>iPhone 6/7/8 Plus :  414 x 736</li>
+<li>iPhone 6/7/8 : 375 x 667</li>
+<li>iPhone 5/SE : 320 x 568</li>
+<li>Galaxy S5 : 360 x 640</li>
+<li>Pixel 2 : 411 x 731</li>
+</ul>
+<p>看到这些你还想用media吗？你要写多少个media？光是一个iPhone就可以搞死你更别说还有一堆的国产机等着你适配。</p>
+<p>那怎么办呢，有没有办法可以让一个CSS适应“所有”的手机呢？</p>
+<p>办法肯定有，那就是<strong>自适应</strong>，我们不需要知道用户的手机的长宽是多少，我们让网页自己匹配用户的手机长宽就好了啊。</p>
+<h4 id="自适应布局"><a href="#自适应布局" class="headerlink" title="自适应布局"></a>自适应布局</h4><p>自适应布局有下面两种常规方法</p>
+<ul>
+<li>百分比布局：宽度百分比。</li>
+<li>缩放布局：按比例设置网页宽高。</li>
+</ul>
+<p>这两个布局看一个比例一个百分比看上去意思是一样，其实不然。百分比布局中的宽度样式不是一个具体的值，而缩放是在已知宽度的情况下定死的值。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*device-width = 320*/</span></span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">50%</span>	<span class="comment">/*160px*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">160px</span> <span class="comment">/*160px*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果我们的目的是在手机上展现body占据屏幕一半的效果的话，上面两种写法在宽度为320px的手机上效果是一样的，都是将body的宽度设置为手机的一半长。<br>现在只是在宽度为320px的手机上展现了1/2的效果，那么当我们的手机是宽度300px的时候呢？</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*device-width = 300*/</span></span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">50%</span>	<span class="comment">/*150px*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">	<span class="attribute">width</span>: <span class="number">150px</span> <span class="comment">/*150px*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果是百分比布局是不是不需要改动，而按比例布局需要改动。</p>
+<p>那么百分比布局能解决问题吗？</p>
+<p>不行，百分比布局有个缺陷，高度是未知的，因为高度没有办法百分比，如果定死了高度那么就没有办法与宽度适应了。一旦我们的页面一复杂，未知的高度会带来更多的问题。</p>
+<p>总的来说我们的页面需要靠宽度适配，再用这个宽度来决定自身的高度以达到宽高都成比例，在不同的手机上都可以按同样的比例展现。</p>
+<p>那有什么方法可以准确获取手机的宽度吗？</p>
+<p>这时我们的英雄登场了，<strong>rem</strong>。</p>
+<p>上面说到rem是根元素font-size的值，那么我们只需要将根元素<code>html</code>的font-size为手机的宽度，这时不就可以通过rem来设置宽高样式了吗。</p>
+<h3 id="rem怎么用？"><a href="#rem怎么用？" class="headerlink" title="rem怎么用？"></a>rem怎么用？</h3><p><a href="https://jsbin.com/nididum/8/edit?html,css,js,output" target="_blank" rel="noopener">动态REM demo</a></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-16e65b53db92e72b.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width=<span class="built_in">document</span>.documentElement.clientWidth;</span><br><span class="line"><span class="built_in">document</span>.write(<span class="string">`&lt;style&gt;html&#123;font-size:<span class="subst">$&#123;width <span class="regexp">/ 10&#125;px&#125;&lt;/</span>style&gt;<span class="string">`)</span></span></span></span><br></pre></td></tr></table></figure>
+<p>JS代码就两行，将rem设置为手机宽度的的10%，虽然设置width / 100可以完全模拟vw（自适应不用vw是因为vw兼容性太差了），但是当em为1%时，一但宽度小于120px时，font-size就会小于12px，低于chrome默认的最小font-size就会出现bug，所以我们设置rem为10%。</p>
+<p>还需要注意的是虽然width和height是用rem使用，但是不代表别的大小也需要用rem（如果字体的font-size也用rem，那当宽度很小时，字会小的看不清），我们应该搭配别的单位以获得更美观的效果。</p>
+<h3 id="使用SCSS自动转换px"><a href="#使用SCSS自动转换px" class="headerlink" title="使用SCSS自动转换px"></a>使用SCSS自动转换px</h3><p>为了减少我们计算量，我们可以直接使用scss写一个function帮我们解决转换的问题。 </p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@function px( <span class="variable">$px</span> )&#123;</span><br><span class="line">  @return <span class="variable">$px</span>/<span class="variable">$designWidth</span>*<span class="number">10</span> + rem;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$designWidth</span> : <span class="number">640</span>。</span><br><span class="line"></span><br><span class="line">.box&#123;</span><br><span class="line">  background: grey;</span><br><span class="line">  <span class="attribute">width</span>: px(<span class="number">256</span>);</span><br><span class="line">  <span class="attribute">height</span>: px(<span class="number">128</span>);</span><br><span class="line">  <span class="attribute">margin</span>: px(<span class="number">32</span>) px(<span class="number">32</span>);</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/11/Web移动端页面-响应式和动态REM/">Web移动端页面  --响应式和动态REM</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Liang Jiahao</a></p>
+        <p><span>发布时间:</span>2018-05-11, 19:38:44</p>
+        <p><span>最后更新:</span>2018-05-11, 20:00:50</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/11/Web移动端页面-响应式和动态REM/" title="Web移动端页面  --响应式和动态REM">http://criya.top/2018/05/11/Web移动端页面-响应式和动态REM/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://criya.top/2018/05/11/Web移动端页面-响应式和动态REM/　　作者: Liang Jiahao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/05/18/前端面试题自测/">
+                    前端面试题自测
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/05/09/模仿jQuery的形式定义自己的addClass/">
+                    模仿jQuery的形式定义自己的addClass()
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#响应式"><span class="toc-number">1.</span> <span class="toc-text">响应式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是响应式页面呢？"><span class="toc-number">1.1.</span> <span class="toc-text">什么是响应式页面呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Media-Query"><span class="toc-number">1.2.</span> <span class="toc-text">Media Query</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#是什么"><span class="toc-number">1.2.1.</span> <span class="toc-text">是什么</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用法"><span class="toc-number">1.3.</span> <span class="toc-text">用法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引用方式"><span class="toc-number">1.3.1.</span> <span class="toc-text">引用方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#条件判断"><span class="toc-number">1.3.2.</span> <span class="toc-text">条件判断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Mobile-First"><span class="toc-number">1.3.3.</span> <span class="toc-text">Mobile First</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#meta-viewport"><span class="toc-number">1.4.</span> <span class="toc-text">meta viewport</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移动端特点"><span class="toc-number">1.5.</span> <span class="toc-text">移动端特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要响应式？"><span class="toc-number">1.6.</span> <span class="toc-text">为什么需要响应式？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态REM自适应"><span class="toc-number">2.</span> <span class="toc-text">动态REM自适应</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是rem？"><span class="toc-number">2.1.</span> <span class="toc-text">什么是rem？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rem有什么用？"><span class="toc-number">2.2.</span> <span class="toc-text">rem有什么用？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#自适应布局"><span class="toc-number">2.2.1.</span> <span class="toc-text">自适应布局</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rem怎么用？"><span class="toc-number">2.3.</span> <span class="toc-text">rem怎么用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用SCSS自动转换px"><span class="toc-number">2.4.</span> <span class="toc-text">使用SCSS自动转换px</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Web移动端页面  --响应式和动态REM　| Criya　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://criya.top/2018/05/11/Web移动端页面-响应式和动态REM/';
+            this.page.identifier = '2018/05/11/Web移动端页面-响应式和动态REM/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/05/18/前端面试题自测/" title="上一篇: 前端面试题自测">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/05/09/模仿jQuery的形式定义自己的addClass/" title="下一篇: 模仿jQuery的形式定义自己的addClass()">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/">前端向后端发送请求，JSONP学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/">CS184.1X 笔记一 3D图像管道简要概括</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/18/前端面试题自测/">前端面试题自测</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/Web移动端页面-响应式和动态REM/">Web移动端页面  --响应式和动态REM</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/09/模仿jQuery的形式定义自己的addClass/">模仿jQuery的形式定义自己的addClass()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/03/原生JS-CSS实现一个简单带二级菜单顶部导航/">原生JS+CSS实现一个简单带二级菜单顶部导航</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/CSS绝对定位top-100-和bottom-0的区别/">CSS绝对定位top: 100%和bottom:0的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/22/JS中的1-toString/">JS中的1.toString()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/Go-学习记录（一）/">Go 学习记录（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/20/JavaScript学习笔记（一）/">JavaScript学习笔记（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/初识HTTP/">初识HTTP</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 Liang Jiahao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 1;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
