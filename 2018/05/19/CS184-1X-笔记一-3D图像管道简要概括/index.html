@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Liang Jiahao" />
+
+
+
+<meta name="description" content="计算机图形的应用  Movies Games CAD Lighting Simulation  Visulization Virtual Reality  制作三维图像的流程 Modeling3D几何中所谓建模就是构建现实世界的物体的三角网格  Renderingvisibility最早在上世纪60年代面对的最早的挑战是，visibility ( 可见化 )，当时提出了很多技术消除隐藏线算法和消除">
+<meta name="keywords" content="graphic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS184.1X 笔记一 3D图像管道简要概括">
+<meta property="og:url" content="http://criya.top/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/index.html">
+<meta property="og:site_name" content="Criya">
+<meta property="og:description" content="计算机图形的应用  Movies Games CAD Lighting Simulation  Visulization Virtual Reality  制作三维图像的流程 Modeling3D几何中所谓建模就是构建现实世界的物体的三角网格  Renderingvisibility最早在上世纪60年代面对的最早的挑战是，visibility ( 可见化 )，当时提出了很多技术消除隐藏线算法和消除">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-0b1392910f539f93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-46504bed8ea6726f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-abf1bec0bfc885ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-eb4fef172f248b51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-883dc862fcc2c74a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-44de234b72443f9f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-a4a384d380c4bb06.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-72488028bf3916a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-b788a464dbb4fcf4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-511b8e49f9c55b2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-05-19T06:02:22.847Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CS184.1X 笔记一 3D图像管道简要概括">
+<meta name="twitter:description" content="计算机图形的应用  Movies Games CAD Lighting Simulation  Visulization Virtual Reality  制作三维图像的流程 Modeling3D几何中所谓建模就是构建现实世界的物体的三角网格  Renderingvisibility最早在上世纪60年代面对的最早的挑战是，visibility ( 可见化 )，当时提出了很多技术消除隐藏线算法和消除">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5624859-0b1392910f539f93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Criya" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>CS184.1X 笔记一 3D图像管道简要概括 | Criya</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/myIcon.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Liang Jiahao</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/myIcon.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-CS184-1X-笔记一-3D图像管道简要概括" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/" class="article-date">
+      <time datetime="2018-05-19T06:00:56.000Z" itemprop="datePublished">2018-05-19</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CS184.1X 笔记一 3D图像管道简要概括
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/graphic/">graphic</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>计算机图形的应用</p>
+<ul>
+<li>Movies</li>
+<li>Games</li>
+<li>CAD</li>
+<li>Lighting Simulation </li>
+<li>Visulization</li>
+<li>Virtual Reality</li>
+</ul>
+<h2 id="制作三维图像的流程"><a href="#制作三维图像的流程" class="headerlink" title="制作三维图像的流程"></a>制作三维图像的流程</h2><p><img src="https://upload-images.jianshu.io/upload_images/5624859-0b1392910f539f93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h3 id="Modeling"><a href="#Modeling" class="headerlink" title="Modeling"></a>Modeling</h3><p>3D几何中所谓建模就是构建现实世界的物体的<em>三角网格</em></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-46504bed8ea6726f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h3 id="Rendering"><a href="#Rendering" class="headerlink" title="Rendering"></a>Rendering</h3><h4 id="visibility"><a href="#visibility" class="headerlink" title="visibility"></a>visibility</h4><p>最早在上世纪60年代面对的最早的挑战是，<strong>visibility ( 可见化 )</strong>，当时提出了很多技术<em>消除隐藏线算法</em>和<em>消除隐藏面算法</em>。</p>
+<p>举个例子，例如在这样一幅只画了线框的中，我们是无法确定物体与物体之间位置关系的。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-abf1bec0bfc885ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>通过<em>消除隐藏线算法</em>消除我们不应该看到的线，这样可以让我们观察到不同物体之间的深度。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-eb4fef172f248b51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>继续拓展<em>消除隐藏线</em>即可延伸到<em>消除隐藏面</em>。<br> visibility的<strong>根本挑战</strong>就是这个物体在哪个物体的前面，也就是它们的层次关系。<br><a href="https://en.wikipedia.org/wiki/Ivan_Sutherland" target="_blank" rel="noopener">Ivan Sutherland</a>提出了把可视问题转为排序问题的方法，并且比较了许多算法的。</p>
+<p>一旦完成了消隐之后就可以给图形上色了。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-883dc862fcc2c74a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>但是这还无法使我们满足，因为从这些图形上面还是能看到许多它们不应该出现的样子，例如一个圆体上面还有许多四边形边形。</p>
+<h4 id="lighting"><a href="#lighting" class="headerlink" title="lighting"></a>lighting</h4><p>几何图形进行消隐并上色还还是不太理想，这是上世纪70年代面临的难题，<strong>如何得到几何体的好看的，色彩平滑过渡的图像？</strong></p>
+<p>犹他大学的Henri Gouraud提出了处理这种多边形图案的方法，<strong>插值明暗</strong><br><img src="https://upload-images.jianshu.io/upload_images/5624859-44de234b72443f9f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这就是著名的<strong>Gouraud明暗处理</strong>，这种平滑着色法使图案看起来更加的平滑更像真正的曲目而不是刚刚那样棱角分明，在OpenGL任然使用这种方法。但是即使这样这些图案还是缺少光泽，它们只是被赋予了恒定的颜色。</p>
+<p>Bui Tuong Phong提出了新的方法，<strong>Phong明暗处理（Phong光照模型）</strong>，有了<strong>镜面反射</strong>的概念。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-a4a384d380c4bb06.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这种方法在图案中加入了高光。</p>
+<h4 id="Global-illumination"><a href="#Global-illumination" class="headerlink" title="Global illumination"></a>Global illumination</h4><p>Turner Whited 在1980年提出了<strong>递归的光线跟踪(ray tracing)算法</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-72488028bf3916a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>另一个突破是Goral提出的<strong>模拟辐射度(radiosity)</strong><br>能够模拟光线在物体与物体之间的传递。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-b788a464dbb4fcf4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>最终Kajiya在1986年提出了<strong>渲染方程(the rendering equation)</strong>，将上面的几种技术结合到了一起，呈现了多种视觉效果。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-511b8e49f9c55b2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/">CS184.1X 笔记一 3D图像管道简要概括</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Liang Jiahao</a></p>
+        <p><span>发布时间:</span>2018-05-19, 14:00:56</p>
+        <p><span>最后更新:</span>2018-05-19, 14:02:22</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/" title="CS184.1X 笔记一 3D图像管道简要概括">http://criya.top/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://criya.top/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/　　作者: Liang Jiahao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/">
+                    前端向后端发送请求，JSONP学习笔记
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/05/18/前端面试题自测/">
+                    前端面试题自测
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#制作三维图像的流程"><span class="toc-number">1.</span> <span class="toc-text">制作三维图像的流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Modeling"><span class="toc-number">1.1.</span> <span class="toc-text">Modeling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Rendering"><span class="toc-number">1.2.</span> <span class="toc-text">Rendering</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#visibility"><span class="toc-number">1.2.1.</span> <span class="toc-text">visibility</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#lighting"><span class="toc-number">1.2.2.</span> <span class="toc-text">lighting</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Global-illumination"><span class="toc-number">1.2.3.</span> <span class="toc-text">Global illumination</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"CS184.1X 笔记一 3D图像管道简要概括　| Criya　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://criya.top/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/';
+            this.page.identifier = '2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/" title="上一篇: 前端向后端发送请求，JSONP学习笔记">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/05/18/前端面试题自测/" title="下一篇: 前端面试题自测">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/">前端向后端发送请求，JSONP学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/">CS184.1X 笔记一 3D图像管道简要概括</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/18/前端面试题自测/">前端面试题自测</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/Web移动端页面-响应式和动态REM/">Web移动端页面  --响应式和动态REM</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/09/模仿jQuery的形式定义自己的addClass/">模仿jQuery的形式定义自己的addClass()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/03/原生JS-CSS实现一个简单带二级菜单顶部导航/">原生JS+CSS实现一个简单带二级菜单顶部导航</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/CSS绝对定位top-100-和bottom-0的区别/">CSS绝对定位top: 100%和bottom:0的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/22/JS中的1-toString/">JS中的1.toString()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/Go-学习记录（一）/">Go 学习记录（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/20/JavaScript学习笔记（一）/">JavaScript学习笔记（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/初识HTTP/">初识HTTP</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 Liang Jiahao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 1;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
