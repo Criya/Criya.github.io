@@ -99,7 +99,7 @@
 <div class="intrude-less">
     <header id="header" class="inner">
         <a href="/" class="profilepic">
-            <img src="/img/myIcon.png" class="animated zoomIn">
+            <img src="/img/myIcon.jpg" class="animated zoomIn">
         </a>
         <hgroup>
           <h1 class="header-author"><a href="/">Liang Jiahao</a></h1>
@@ -231,7 +231,7 @@
     <div class="intrude-less">
         <header id="header" class="inner">
             <a href="/" class="profilepic">
-                <img src="/img/myIcon.png" class="animated zoomIn">
+                <img src="/img/myIcon.jpg" class="animated zoomIn">
             </a>
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">Liang Jiahao</a></h1>
@@ -267,6 +267,88 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-JavaScript学习笔记（一）" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/04/20/JavaScript学习笔记（一）/" class="article-date">
+      <time datetime="2018-04-20T06:56:49.000Z" itemprop="datePublished">2018-04-20</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/20/JavaScript学习笔记（一）/">JavaScript学习笔记（一）</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var s = `hello</span><br><span class="line">world`</span><br><span class="line">s.length // 11</span><br></pre></td></tr></table></figure>
+<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>null表示空object，undefined表示空非object。</p>
+<p>ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。</p>
+<p>object的key在声明是必定为string类型，若果不是的话自动转换为string。</p>
+<p>当需要用key索引时，用object.[index]的方式索引时，index必须为字符串，因为中括号获取object的属性它并不会自动给你转成字符串。</p>
+<p>当key为空字符串’’时，必须使用object[‘’]来获取。</p>
+<p>object.atr的atr等价于object[‘atr’],所以在for..in中不应该用.atr变量value。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> object)&#123;</span><br><span class="line">	<span class="comment">//错误，等价于object['key']，它会去访问你的object里有没'key'这个属性</span></span><br><span class="line">	<span class="built_in">console</span>.log(object.key)	  </span><br><span class="line">	<span class="built_in">console</span>.log(object[key])  <span class="comment">// 正确</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>在用点访问对象的属性时，这个属性必须满足标识符的命名规则</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="number">0</span>]) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="string">'0'</span>]) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">console</span>.log(a<span class="number">.0</span>) <span class="comment">//SyntaxError: Unexpected number</span></span><br><span class="line"><span class="built_in">console</span>.log(a.<span class="string">'0'</span>) <span class="comment">//SyntaxError: Unexpected string</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>将任意类型转为Boolean的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">object.toString()</span><br><span class="line"><span class="built_in">String</span>(object)</span><br><span class="line"><span class="string">''</span> + object</span><br></pre></td></tr></table></figure>
+<h4 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h4><p>将任意类型转为Boolean的方法<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Boolean</span>(object)</span><br><span class="line">!!(object)</span><br></pre></td></tr></table></figure></p>
+<p>在JS中只有五个值时取Boolean为false的。<br>五个falsy值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">!! underfined <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">null</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="string">''</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="number">0</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">NaN</span> <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+<p>所有的object的布尔值都是true（typeof(null) === ‘object’ 就是一个bug）。</p>
+<h5 id="why-typeof-nul-object"><a href="#why-typeof-nul-object" class="headerlink" title="why typeof nul === object"></a>why typeof nul === object</h5><blockquote>
+<ol>
+<li>娘胎里带出来的.    JS类型值是存在32 BIT 单元里,32位有1-3位表示TYPE TAG,其它位表示真实值   而表示object的标记位正好是低三位都是0    000: object. The data is a reference to an object.   而js  里的Null 是机器码NULL空指针, (0x00 is most platforms).所以空指针引用 加上 对象标记还是0,最终体现的类型还是object..这也就是为什么Number(null)===0吧…The history of “typeof null”2. 曾经有提案 typeof null === ‘null’.但提案被拒绝harmony:typeof_null [ES Wiki]</li>
+</ol>
+</blockquote>
+<h4 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h4><p>将任意类型转为Number的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Number</span>(<span class="string">'1'</span>) <span class="comment">//1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">'088'</span>) <span class="comment">//88</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">'0.23d'</span>) <span class="comment">//0.23</span></span><br><span class="line"><span class="string">'1'</span> - <span class="number">0</span> <span class="comment">//1</span></span><br><span class="line">+<span class="string">'1'</span> <span class="comment">//1</span></span><br><span class="line">-(-<span class="string">'1'</span>) <span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-初识HTTP" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -389,7 +471,7 @@
                 $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
             }
             else {
-                var backgroundnum = 1;
+                var backgroundnum = 4;
                 var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
                 $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
             }

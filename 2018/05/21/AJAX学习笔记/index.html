@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Liang Jiahao" />
+
+
+
+<meta name="description" content="AJAX之前回顾一下最早向服务器发请求的方式  &amp;lt;form&amp;gt;表单发送，最早的发请求方式，可以发各种类型的请求，缺点是每次发送完请求都需要刷新页面，后来前辈们的做法是在iframe中刷新页面。 利用&amp;lt;a&amp;gt;标签，只能发送GET请求，页面会被刷新。 &amp;lt;img&amp;gt;和&amp;lt;link&amp;gt;，只能发送GET请求，不过页面不会被刷新，但是必须以图片或者css, favicon">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AJAX学习笔记">
+<meta property="og:url" content="http://criya.top/2018/05/21/AJAX学习笔记/index.html">
+<meta property="og:site_name" content="Criya">
+<meta property="og:description" content="AJAX之前回顾一下最早向服务器发请求的方式  &amp;lt;form&amp;gt;表单发送，最早的发请求方式，可以发各种类型的请求，缺点是每次发送完请求都需要刷新页面，后来前辈们的做法是在iframe中刷新页面。 利用&amp;lt;a&amp;gt;标签，只能发送GET请求，页面会被刷新。 &amp;lt;img&amp;gt;和&amp;lt;link&amp;gt;，只能发送GET请求，不过页面不会被刷新，但是必须以图片或者css, favicon">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-f4497e586027656d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-dafd42d56226098d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-c41fb57a0d269a19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-05-21T05:47:09.774Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AJAX学习笔记">
+<meta name="twitter:description" content="AJAX之前回顾一下最早向服务器发请求的方式  &amp;lt;form&amp;gt;表单发送，最早的发请求方式，可以发各种类型的请求，缺点是每次发送完请求都需要刷新页面，后来前辈们的做法是在iframe中刷新页面。 利用&amp;lt;a&amp;gt;标签，只能发送GET请求，页面会被刷新。 &amp;lt;img&amp;gt;和&amp;lt;link&amp;gt;，只能发送GET请求，不过页面不会被刷新，但是必须以图片或者css, favicon">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5624859-f4497e586027656d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Criya" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>AJAX学习笔记 | Criya</title>
+
+<script src="//cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/3.4.0/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/myIcon.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Liang Jiahao</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/myIcon.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Liang Jiahao</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:957479400@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/Criya" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-AJAX学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/21/AJAX学习笔记/" class="article-date">
+      <time datetime="2018-05-21T05:46:01.000Z" itemprop="datePublished">2018-05-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      AJAX学习笔记
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="AJAX之前"><a href="#AJAX之前" class="headerlink" title="AJAX之前"></a>AJAX之前</h2><p>回顾一下最早向服务器发请求的方式</p>
+<ol>
+<li><code>&lt;form&gt;</code>表单发送，最早的发请求方式，可以发各种类型的请求，缺点是每次发送完请求都需要刷新页面，后来前辈们的做法是在iframe中刷新页面。</li>
+<li>利用<code>&lt;a&gt;</code>标签，只能发送GET请求，页面会被刷新。</li>
+<li><code>&lt;img&gt;</code>和<code>&lt;link&gt;</code>，只能发送GET请求，不过页面不会被刷新，但是必须以图片或者css, favicon的形式展示。</li>
+<li>利用<code>&lt;script&gt;</code>标签，只能发送GET请求且页面不会刷新，必须以脚本形式运行。利用SRJ技术延伸出了JSONP技术，解决跨域请求的好办法。</li>
+</ol>
+<p>上面几种方法是我们前端最常见的向后端发送请求的方法，它们或多或少都可以解决我们的需求，但是都不完美，我们没有办法在浏览器中随心所欲的向服务器发送请求。</p>
+<p>有没有办法可以做到，我们可以发送任意类型的请求，以我们自己方式展示而不是img, css, script这些呢？</p>
+<h2 id="AJAX的出现"><a href="#AJAX的出现" class="headerlink" title="AJAX的出现"></a>AJAX的出现</h2><h3 id="ActiveX"><a href="#ActiveX" class="headerlink" title="ActiveX"></a>ActiveX</h3><p>在AJAX正式登上舞台之前，那时还是IE的天下，微软首先做出了突破。<br>IE5率先引入了一个ActiveX对象，可以让JS直接发送HTTP请求。</p>
+<h3 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h3><p>ActiveX出现后，Mozilla, Safari, Opera也随之模仿，引入了一个叫<strong>XMLHttpRequest</strong>的对象，后来被W3C纳入了规范。</p>
+<p>那么AJAX到底是什么呢？<br>它跟JSONP一样，也是一种解决方案的名字。<br>Jesse James Garrett将下面这个技术取名为AJAX：异步的JavaScript和XML。</p>
+<ol>
+<li>使用XMLHttpRequest发送请求</li>
+<li>服务器返回XML格式字符串</li>
+<li>JS解析XML并更新局部页面</li>
+</ol>
+<h3 id="AJAX的使用"><a href="#AJAX的使用" class="headerlink" title="AJAX的使用"></a>AJAX的使用</h3><p>在使用AJAX之前，再回顾一下JSONP是怎么实现的吧，看看jQuery是怎么用的（注释的部分是原生JS实现）。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>灵梦的塞钱箱: <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"amount"</span>&gt;</span>&amp;&amp;&amp;money&amp;&amp;&amp;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"pay"</span>&gt;</span>打钱<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">        // var callback = "reimu"+parseInt(Math.random()*10000000, 10)</span></span><br><span class="line"><span class="undefined">        // window[callback] = function (response, money) &#123;</span></span><br><span class="line"><span class="undefined">        //     //接收服务器返回的数据,</span></span><br><span class="line"><span class="undefined">        //     //如果请求成功，则更改页面信息</span></span><br><span class="line"><span class="undefined">        //     // if(response === 'success')&#123;</span></span><br><span class="line"><span class="undefined">        //     //     amount.innerHTML = money </span></span><br><span class="line"><span class="undefined">        //     // &#125;           </span></span><br><span class="line"><span class="undefined">        // &#125;</span></span><br><span class="line"><span class="undefined">        // pay.addEventListener("click", ()=&gt;&#123;</span></span><br><span class="line"><span class="undefined">        //     // var money = parseInt(amount.innerHTML, 10)</span></span><br><span class="line"><span class="undefined">        //     // amount.innerHTML = money+1;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        //     var render = document.createElement("script")</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        //     //向服务器发送请求，并把回调函数的名字传过去</span></span><br><span class="line"><span class="undefined">        //     render.src = `/pay?callback=$&#123;callback&#125;`</span></span><br><span class="line"><span class="undefined">        //     document.body.appendChild(render)</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        // &#125;)</span></span><br><span class="line"><span class="undefined">        pay.addEventListener("click", ()=&gt;&#123;</span></span><br><span class="line"><span class="undefined">            $.ajax(&#123;</span></span><br><span class="line"><span class="undefined">                url: '/pay',</span></span><br><span class="line"><span class="undefined">                dataType: 'jsonp',</span></span><br><span class="line"><span class="undefined">                success: (response)=&gt;&#123;</span></span><br><span class="line"><span class="undefined">                    if(response === "success")&#123;</span></span><br><span class="line"><span class="undefined">                        amount.innerHTML = parseInt(amount.innerHTML, 10) + 1</span></span><br><span class="line"><span class="undefined">                    &#125;                  </span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;)</span></span><br><span class="line"><span class="undefined">        &#125;)</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>后台的代码也非常简单，获取一下callback然后将数据（”success”）通过callback传回去而已。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(path === <span class="string">'/pay'</span>)&#123;</span><br><span class="line">        <span class="keyword">let</span> callback = query.callback<span class="comment">//从发送GET请求的查询参数获取callback名</span></span><br><span class="line">        response.statusCode = <span class="number">200</span></span><br><span class="line">        response.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'application/javascript; charset=utf-8'</span>)</span><br><span class="line">        <span class="keyword">let</span> amount = fs.readFileSync(<span class="string">"./money.db"</span>, <span class="string">"utf-8"</span>)</span><br><span class="line">        amount ++</span><br><span class="line">        fs.writeFileSync(<span class="string">"./money.db"</span>, amount)</span><br><span class="line">        <span class="comment">// response.write(`$&#123;callback&#125;("scuess")`) </span></span><br><span class="line">        response.write(<span class="string">`<span class="subst">$&#123;callback&#125;</span>("success")`</span>)</span><br><span class="line">        response.end()</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="XMLHttpRequest"><a href="#XMLHttpRequest" class="headerlink" title="XMLHttpRequest"></a>XMLHttpRequest</h3><p>我们的AJAX的第一步是：<strong>使用XMLHttpRequest发送请求</strong><br>那么就我们先来看看这个东西。<br>使用XMLHttpRequest非常简单，只需要三行代码就可以发送一个HTTP请求</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pay.addEventListener(<span class="string">"click"</span>, ()=&gt;&#123;</span><br><span class="line">				<span class="comment">//这个对象有我们需要的所有信息</span></span><br><span class="line">            <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">            request.open(<span class="string">"GET"</span>, <span class="string">"/ajax"</span>)</span><br><span class="line">            request.send()</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+<p>open可以接受五个参数，我们一般只填写前两个就够了，默认就是异步的（不是异步就不是AJAX了）。method可以使任意方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> open(</span><br><span class="line">   DOMString method,</span><br><span class="line">   DOMString url,</span><br><span class="line">   optional boolean <span class="keyword">async</span>,</span><br><span class="line">   optional DOMString user,</span><br><span class="line">   optional DOMString password</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>XMLHttpRequest顾名思义最早是用来传XML数据的，虽然现在已经没人用了（大雾），但是为了尊重历史，我们也从XML开始用起好了，毕竟我们学的是技术，XML只是工具，万变不离其中。<br>现在我们来简单实现一下AJAX的第二步，<strong>服务器返回XML格式字符串</strong>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (path === <span class="string">'/ajax'</span>) &#123;</span><br><span class="line">       response.statusCode = <span class="number">200</span></span><br><span class="line">       response.setHeader(<span class="string">"Content-Type"</span>, <span class="string">"text/xml; charset=utf-8"</span>)</span><br><span class="line">		<span class="comment">//这个xml是网上随便找的</span></span><br><span class="line">       response.write(<span class="string">`</span></span><br><span class="line"><span class="string">           &lt;note&gt;</span></span><br><span class="line"><span class="string">               &lt;to&gt;Tove&lt;/to&gt;</span></span><br><span class="line"><span class="string">               &lt;from&gt;Jani&lt;/from&gt;</span></span><br><span class="line"><span class="string">               &lt;heading&gt;Reminder&lt;/heading&gt;</span></span><br><span class="line"><span class="string">               &lt;body&gt;Don't forget me this weekend!&lt;/body&gt;              </span></span><br><span class="line"><span class="string">           &lt;/note&gt;</span></span><br><span class="line"><span class="string">       `</span>)</span><br><span class="line">       response.end()</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>后台代码写好了，如果接收到访问/ajax的请求，向它返回一段XML。</p>
+<p>接下来就可以轮到AJAX的第三步了，<strong>JS解析XML并更新局部页面</strong>。</p>
+<p>现在回到我们的前端，就像最上面说的那样，XMLHttpRequest包含了我们需要的所有东西，当然也包括后台返回给我们response，我们只需要查看XMLHttpRequest对象的response属性就可以获取响应。</p>
+<h4 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h4><p>我们直接调用response就可以了吗？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pay.addEventListener(<span class="string">"click"</span>, ()=&gt;&#123;</span><br><span class="line">    <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">    request.open(<span class="string">"GET"</span>, <span class="string">"/ajax"</span>)</span><br><span class="line">    request.send()</span><br><span class="line">    <span class="built_in">console</span>.log(request.responseText)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>很遗憾，你的浏览器可能什么都不会返回给你。可是我们在F12中是能够看到我们的response的。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-f4497e586027656d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这是因为我们通过XMLHttpRequest发送请求的整个过程是异步的，从①这个request对象发起请求到收到请求与②我们查询request对象是同时进行的。</p>
+<p>我们可以看一下它们花费的时间</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.time()</span><br><span class="line"><span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">request.open(<span class="string">"GET"</span>, <span class="string">"/ajax"</span>)</span><br><span class="line">request.send()</span><br><span class="line"><span class="built_in">console</span>.log(request.responseText)</span><br><span class="line"><span class="built_in">console</span>.timeEnd() <span class="comment">// 结果在0.7~1 ms之间浮动</span></span><br></pre></td></tr></table></figure>
+<p>再看看我们获取到响应的时间，是远超我们查询时时间的。<br><img src="https://upload-images.jianshu.io/upload_images/5624859-dafd42d56226098d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>那有什么办法可以等到浏览器接收到响应之后再获取响应内容呢？<br>当然有，XMLHttpRequest给我们提供了一个很便利属性和api。</p>
+<h4 id="readyState"><a href="#readyState" class="headerlink" title="readyState"></a>readyState</h4><blockquote>
+<p>XMLHttpRequest.readyState 属性返回一个 XMLHttpRequest  代理当前所处的状态。一个 XHR 代理总是处于下列状态中的一个：<br>0        代理被创建，但尚未调用 open() 方法。<br>1        open() 方法已经被调用。<br>2        send() 方法已经被调用，并且头部和状态已经可获得。<br>3        下载中； responseText 属性已经包含部分数据。<br>4        下载操作已完成。</p>
+</blockquote>
+<p>我们只需关注这个readyState即可，当它的状态码为4的时候就可以获取到response了。可以通过一个简单的例子演示一下，我们每1ms访问一次readyState</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> timer = setInterval(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">                <span class="built_in">console</span>.log(request.response);</span><br><span class="line">                <span class="keyword">if</span>(request.readyState === <span class="number">4</span>)&#123;</span><br><span class="line">                    <span class="built_in">window</span>.clearInterval(timer)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-c41fb57a0d269a19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>可以看到，实际上第五次访问时response加载完毕（这些浏览器提供的api还有setInterval都不是很精确的不用很在意，大雾- -！）。</p>
+<p>XMLHttpRequest提供了一个便利的api，onreadystatechange事件，readyState的每一次变动都会被监听到</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    request.onreadystatechange = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(request.readyState === <span class="number">4</span>)&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"加载完毕"</span>)</span><br><span class="line">            <span class="keyword">var</span> str = request.responseText</span><br><span class="line">            <span class="keyword">var</span> xml = (<span class="keyword">new</span> DOMParser()).parseFromString(str, <span class="string">"text/xml"</span>)           </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>到这就实现了一个简单的怀旧版AJAX，之后就是对xml各种复杂的DOM操作了。<br>当然我们现代人现在用的都是JSON，不过道理都是一样。</p>
+<h2 id="AJAX的限制"><a href="#AJAX的限制" class="headerlink" title="AJAX的限制"></a>AJAX的限制</h2><p>基于安全问题的同源策略的限制，我们希望发送跨站请求时，是无法直接发送AJAX请求的。<br>最简单的方法就是使用CORS，我们只需要在后端的API上添加response header<br><code>Access-Control-Allow-Orign: &quot;&lt;from orign&gt;&quot;</code></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/21/AJAX学习笔记/">AJAX学习笔记</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Liang Jiahao</a></p>
+        <p><span>发布时间:</span>2018-05-21, 13:46:01</p>
+        <p><span>最后更新:</span>2018-05-21, 13:47:09</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/21/AJAX学习笔记/" title="AJAX学习笔记">http://criya.top/2018/05/21/AJAX学习笔记/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://criya.top/2018/05/21/AJAX学习笔记/　　作者: Liang Jiahao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/">
+                    前端向后端发送请求，JSONP学习笔记
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AJAX之前"><span class="toc-number">1.</span> <span class="toc-text">AJAX之前</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AJAX的出现"><span class="toc-number">2.</span> <span class="toc-text">AJAX的出现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ActiveX"><span class="toc-number">2.1.</span> <span class="toc-text">ActiveX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AJAX"><span class="toc-number">2.2.</span> <span class="toc-text">AJAX</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AJAX的使用"><span class="toc-number">2.3.</span> <span class="toc-text">AJAX的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XMLHttpRequest"><span class="toc-number">2.4.</span> <span class="toc-text">XMLHttpRequest</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#异步"><span class="toc-number">2.4.1.</span> <span class="toc-text">异步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#readyState"><span class="toc-number">2.4.2.</span> <span class="toc-text">readyState</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AJAX的限制"><span class="toc-number">3.</span> <span class="toc-text">AJAX的限制</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-6 i,
+        .toc-level-6 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"AJAX学习笔记　| Criya　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'http://criya.top/2018/05/21/AJAX学习笔记/';
+            this.page.identifier = '2018/05/21/AJAX学习笔记/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/" title="下一篇: 前端向后端发送请求，JSONP学习笔记">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/AJAX学习笔记/">AJAX学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/前端向后端发送请求，JSONP学习笔记/">前端向后端发送请求，JSONP学习笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/CS184-1X-笔记一-3D图像管道简要概括/">CS184.1X 笔记一 3D图像管道简要概括</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/18/前端面试题自测/">前端面试题自测</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/11/Web移动端页面-响应式和动态REM/">Web移动端页面  --响应式和动态REM</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/09/模仿jQuery的形式定义自己的addClass/">模仿jQuery的形式定义自己的addClass()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/03/原生JS-CSS实现一个简单带二级菜单顶部导航/">原生JS+CSS实现一个简单带二级菜单顶部导航</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/CSS绝对定位top-100-和bottom-0的区别/">CSS绝对定位top: 100%和bottom:0的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/22/JS中的1-toString/">JS中的1.toString()</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/Go-学习记录（一）/">Go 学习记录（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/20/JavaScript学习笔记（一）/">JavaScript学习笔记（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/初识HTTP/">初识HTTP</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2018 Liang Jiahao
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 4;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
