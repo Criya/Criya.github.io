@@ -191,7 +191,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/">Node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
                     </div>
                 </section>
                 
@@ -267,6 +267,104 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-基于Node-js-express搭建的在线备忘录（1）——准备工作" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/" class="article-date">
+      <time datetime="2018-06-08T01:08:04.000Z" itemprop="datePublished">2018-06-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/">基于Node.js express搭建的在线备忘录（1）——准备工作</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="创建express项目"><a href="#创建express项目" class="headerlink" title="创建express项目"></a>创建express项目</h3><h4 id="首先创建工作目录"><a href="#首先创建工作目录" class="headerlink" title="首先创建工作目录"></a>首先创建工作目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir express-sticky-note &amp;&amp; <span class="built_in">cd</span> express-sticky-note</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<h4 id="安装express和express-generator"><a href="#安装express和express-generator" class="headerlink" title="安装express和express-generator"></a>安装express和express-generator</h4><p>希望通过express的脚手架来生成快速生成一个项目框架<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br><span class="line">npm install express --save</span><br><span class="line">npm install express-generator --save-dev</span><br></pre></td></tr></table></figure></p>
+<h4 id="生成express项目"><a href="#生成express项目" class="headerlink" title="生成express项目"></a>生成express项目</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node node_modules/express-generator/bin/express-cli.js . -f -e --git	<span class="comment"># -f无视空文件夹提示 -e ejs模板 --git 生成git ignore</span></span><br><span class="line">npm install <span class="comment">#安装依赖包</span></span><br><span class="line"></span><br><span class="line">DEBUG=express-sticky-note:* npm start <span class="comment">#成功运行</span></span><br></pre></td></tr></table></figure>
+<h3 id="项目结构分析"><a href="#项目结构分析" class="headerlink" title="项目结构分析"></a>项目结构分析</h3><p>通过generator我们可以快速生成一个应用，由下面文件组成<br><img src="https://upload-images.jianshu.io/upload_images/5624859-9306630edc04950e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>我们启动这个应用的命令是<code>npm start</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "start": "node ./bin/www"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>查看package.json可以知道<code>npm start</code>实际上就是运行<code>./bin/www</code>，这个www就相当于main.js。</p>
+<p>这个www是项目启动的开关也就是服务器的开关，主要作用：</p>
+<pre><code>1. 加载包
+2. 设定端口(通过`process.env.PORT`可以在命令行启动时设置端口)
+3. 绑定应用(`http.createServer(app)`app是后台主要逻辑部分)
+4. 应用启动监听
+5. 异常处理
+</code></pre><p>app.js才是我们后台的核心代码，简要分析一下它的功能</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 设置渲染引擎 */</span></span><br><span class="line"><span class="comment">// 设置渲染模板在当前目录下的views文件夹</span></span><br><span class="line">app.set(<span class="string">'views'</span>, path.join(__dirname, <span class="string">'views'</span>));</span><br><span class="line"><span class="comment">// 设置渲染引擎种类</span></span><br><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 设置静态路径(绕过路由) */</span></span><br><span class="line">app.use(express.static(path.join(__dirname, <span class="string">'public'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 路由逻辑中间件分发 */</span></span><br><span class="line">app.use(<span class="string">'/'</span>, indexRouter);</span><br><span class="line">app.use(<span class="string">'/users'</span>, usersRouter);</span><br></pre></td></tr></table></figure>
+<h4 id="前后端交互的逻辑"><a href="#前后端交互的逻辑" class="headerlink" title="前后端交互的逻辑"></a>前后端交互的逻辑</h4><p>一次前后端交互的逻辑可以简单分为下面几部</p>
+<pre><code>1. 服务器拿到收到请求
+2. 根据请求路径路由到不同的逻辑
+3. 决定响应的功能
+    1. URL带参数的AJAX请求：返回数据
+    2. 页面请求：根据数据库和模板渲染网页返回
+</code></pre><h3 id="创建前端工作环境"><a href="#创建前端工作环境" class="headerlink" title="创建前端工作环境"></a>创建前端工作环境</h3><h4 id="创建工作路径"><a href="#创建工作路径" class="headerlink" title="创建工作路径"></a>创建工作路径</h4><p>现在，我们已经将整个框架搭建好了，虽然网页的前端部分实际上是访问public文件夹下的资源，但这并不是我们的原始文件而是打包后的文件。</p>
+<p>我们创建如下工作环境<br><img src="https://upload-images.jianshu.io/upload_images/5624859-b646f477f0ec802f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>我们先按功能分类：在js中存放我们的js代码，img存放原始图片，less存放我们的less样式。<br>在js中再按照应用分类：app为主要逻辑代码，lib为引用的库，mod为引用的组件。</p>
+<h4 id="安装配置webpack"><a href="#安装配置webpack" class="headerlink" title="安装配置webpack"></a>安装配置webpack</h4><p>src只是我们的开发文件，用户真正访问的是经过打包后的文件，这里我使用webpack来打包编译我们的代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-div webpack</span><br></pre></td></tr></table></figure>
+<p>接下来我们做一个简单的模块测试，再创建一个简单的webpack.config.js配置文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** src/webpack.config.js */</span></span><br><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    entry: path.join(__dirname, <span class="string">"js/app/index.js"</span>),</span><br><span class="line">    output: &#123;</span><br><span class="line">        path : path.join(__dirname, <span class="string">"../public/js"</span>),</span><br><span class="line">        filename : <span class="string">"index.js"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行webpack，成功</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-5df50d5d84ba1f66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这样我们每次都需要在src下编译文件，非常不方便，我们设置一下npm的package.json来用快捷方式编译文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "webpack": "webpack --config=src/webpack.config.js"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>只需要添加一行配置就可以直接在目录下<code>npm run webpack</code>编译文件。</p>
+<h4 id="动态更新编译"><a href="#动态更新编译" class="headerlink" title="动态更新编译"></a>动态更新编译</h4><p>我们不希望每次更新都需要我们手动<code>npm run webpack</code>，我们可以借助onchange。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-div onchange</span><br><span class="line"><span class="comment">#onchange 'app/**/*.js' 'test/**/*.js' -- npm test</span></span><br></pre></td></tr></table></figure>
+<p>它的语法非常简单<code>src/**/*.js</code>可以监听src文件下所有层级的js文件。</p>
+<p>现在配置一下package.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "onchange": "onchange 'src/**/*.js' 'src/**/*.less' -- npm run webpack"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们只需要执行<code>npm run webpack</code>即可开始写代码。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node/">Node</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-AJAX学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -1101,93 +1199,6 @@
       
     <div class="article-tag tagcloud">
         <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
-    </div>
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Go-学习记录（一）" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2018/04/21/Go-学习记录（一）/" class="article-date">
-      <time datetime="2018-04-21T04:45:47.000Z" itemprop="datePublished">2018-04-21</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/21/Go-学习记录（一）/">Go 学习记录（一）</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h2 id="package"><a href="#package" class="headerlink" title="package"></a>package</h2><h3 id="package-声明"><a href="#package-声明" class="headerlink" title="package 声明"></a>package 声明</h3><p>每个Go程序都是又包构成，程序执行的入门就是main包。<br>程序顶行声明包名。<br><code>package [packageName]</code></p>
-<h3 id="package-导入"><a href="#package-导入" class="headerlink" title="package 导入"></a>package 导入</h3><p>有两种方式导入包。</p>
-<ol>
-<li>一行一行导入<br><code>Import “[packageName]”</code></li>
-<li>一次性导入，既“分组导入”<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>(</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="Exported-name-导出名"><a href="#Exported-name-导出名" class="headerlink" title="Exported name 导出名"></a>Exported name 导出名</h3><blockquote>
-<p>在 Go 中，如果一个名字以大写字母开头，那么它就是已导出的。<br>意思是，当我们写一个package时，如果声明的变量（函数）是以小写开头，那它就是私有的，当被别的package import时是无法访问这个变量（函数）的。</p>
-</blockquote>
-<h2 id="func-函数"><a href="#func-函数" class="headerlink" title="func 函数"></a>func 函数</h2><p>在Go中，变量类型放在变量后面，返回类型放在函数名后面。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="keyword">int</span>, y <span class="keyword">int</span>)</span> <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Go语言之所以用这样的语法，是因为当涉及到复杂的指针时，变量会变得难以理解以及不美观，例如<br><code>int (*fp)(int (*ff)(int x, int y), int b)</code><br>这是一个指向函数的指针，函数里的参数又是一个指向另一个函数的指针，让人头晕。<br>Go语言的类型后置更方便我们人类阅读。<br>例如，当我们用人类语言描述一样物品会使用这样的方式<br>Iphone：apple公司的智能手机。<br>Go语言只不过是把冒号和一些标点符号去掉而已。<br>x : 一个整数 ==&gt;  x int</p>
-<h3 id="类型省略"><a href="#类型省略" class="headerlink" title="类型省略"></a>类型省略</h3><p>当函数的参数类型都一样时，可以省略除最后一个以外的类型。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x + y	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="多值返回"><a href="#多值返回" class="headerlink" title="多值返回"></a>多值返回</h3><p>Go可以一次返回多个值，只需要在函数声明时写上全部返回类型就可以。（不可省略）<br>当接受多个返回时使用<code>:=</code>  <code>arg1, arg2:=func(args)</code><br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, <span class="keyword">string</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x, y</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	a, b:= add(<span class="string">"hello"</span>, <span class="string">"world"</span>)</span><br><span class="line">	fmt.Println(a,b) <span class="comment">// hello world</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><h3 id="var-变量声明"><a href="#var-变量声明" class="headerlink" title="var 变量声明"></a>var 变量声明</h3><p>在Go中，用var 声明变量，准确的说是声明一个变量列表，看下面一段代码就可理解。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a, b, c <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span></span><br><span class="line">	fmt.Println(a+b+c) <span class="comment">// 6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>var a, b, c int</code>    声明了一个列表，之后一次给列表的元素赋值。</p>
-<h4 id="Short-variable-短变量"><a href="#Short-variable-短变量" class="headerlink" title="Short variable 短变量"></a>Short variable 短变量</h4><p>短变量是指func里的变量，也即是局部变量，局部变量当值已知时，可以不需要类型声明用<code>:=</code>声明</p>
-<blockquote>
-<p>在声明一个变量而不指定其类型时（即使用不带类型的 := 语法或 var = 表达式语法），变量的类型由右值推导得出。<br><code>var a := 1</code></p>
-</blockquote>
-<h4 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h4><p>Go的基本变量类型有</p>
-<ul>
-<li>bool</li>
-<li>string</li>
-<li>int</li>
-<li>float</li>
-<li>complex<br>除了这些之外，还有其它很多类型及其衍生，上述几种数字类型还有还有不同长度或者无符号的，例如int8, int6, uint32，这些以后再说。</li>
-</ul>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/">Go</a></li></ul>
     </div>
 
       

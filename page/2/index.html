@@ -191,7 +191,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node/">Node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/graphic/">graphic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http/">http</a></li></ul>
                     </div>
                 </section>
                 
@@ -267,6 +267,93 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Go-学习记录（一）" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/04/21/Go-学习记录（一）/" class="article-date">
+      <time datetime="2018-04-21T04:45:47.000Z" itemprop="datePublished">2018-04-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/21/Go-学习记录（一）/">Go 学习记录（一）</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="package"><a href="#package" class="headerlink" title="package"></a>package</h2><h3 id="package-声明"><a href="#package-声明" class="headerlink" title="package 声明"></a>package 声明</h3><p>每个Go程序都是又包构成，程序执行的入门就是main包。<br>程序顶行声明包名。<br><code>package [packageName]</code></p>
+<h3 id="package-导入"><a href="#package-导入" class="headerlink" title="package 导入"></a>package 导入</h3><p>有两种方式导入包。</p>
+<ol>
+<li>一行一行导入<br><code>Import “[packageName]”</code></li>
+<li>一次性导入，既“分组导入”<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>(</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="Exported-name-导出名"><a href="#Exported-name-导出名" class="headerlink" title="Exported name 导出名"></a>Exported name 导出名</h3><blockquote>
+<p>在 Go 中，如果一个名字以大写字母开头，那么它就是已导出的。<br>意思是，当我们写一个package时，如果声明的变量（函数）是以小写开头，那它就是私有的，当被别的package import时是无法访问这个变量（函数）的。</p>
+</blockquote>
+<h2 id="func-函数"><a href="#func-函数" class="headerlink" title="func 函数"></a>func 函数</h2><p>在Go中，变量类型放在变量后面，返回类型放在函数名后面。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="keyword">int</span>, y <span class="keyword">int</span>)</span> <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Go语言之所以用这样的语法，是因为当涉及到复杂的指针时，变量会变得难以理解以及不美观，例如<br><code>int (*fp)(int (*ff)(int x, int y), int b)</code><br>这是一个指向函数的指针，函数里的参数又是一个指向另一个函数的指针，让人头晕。<br>Go语言的类型后置更方便我们人类阅读。<br>例如，当我们用人类语言描述一样物品会使用这样的方式<br>Iphone：apple公司的智能手机。<br>Go语言只不过是把冒号和一些标点符号去掉而已。<br>x : 一个整数 ==&gt;  x int</p>
+<h3 id="类型省略"><a href="#类型省略" class="headerlink" title="类型省略"></a>类型省略</h3><p>当函数的参数类型都一样时，可以省略除最后一个以外的类型。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x + y	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="多值返回"><a href="#多值返回" class="headerlink" title="多值返回"></a>多值返回</h3><p>Go可以一次返回多个值，只需要在函数声明时写上全部返回类型就可以。（不可省略）<br>当接受多个返回时使用<code>:=</code>  <code>arg1, arg2:=func(args)</code><br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, <span class="keyword">string</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x, y</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	a, b:= add(<span class="string">"hello"</span>, <span class="string">"world"</span>)</span><br><span class="line">	fmt.Println(a,b) <span class="comment">// hello world</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><h3 id="var-变量声明"><a href="#var-变量声明" class="headerlink" title="var 变量声明"></a>var 变量声明</h3><p>在Go中，用var 声明变量，准确的说是声明一个变量列表，看下面一段代码就可理解。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a, b, c <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span></span><br><span class="line">	fmt.Println(a+b+c) <span class="comment">// 6</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>var a, b, c int</code>    声明了一个列表，之后一次给列表的元素赋值。</p>
+<h4 id="Short-variable-短变量"><a href="#Short-variable-短变量" class="headerlink" title="Short variable 短变量"></a>Short variable 短变量</h4><p>短变量是指func里的变量，也即是局部变量，局部变量当值已知时，可以不需要类型声明用<code>:=</code>声明</p>
+<blockquote>
+<p>在声明一个变量而不指定其类型时（即使用不带类型的 := 语法或 var = 表达式语法），变量的类型由右值推导得出。<br><code>var a := 1</code></p>
+</blockquote>
+<h4 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h4><p>Go的基本变量类型有</p>
+<ul>
+<li>bool</li>
+<li>string</li>
+<li>int</li>
+<li>float</li>
+<li>complex<br>除了这些之外，还有其它很多类型及其衍生，上述几种数字类型还有还有不同长度或者无符号的，例如int8, int6, uint32，这些以后再说。</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/">Go</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-JavaScript学习笔记（一）" class="article article-type-post" itemscope itemprop="blogPost">
   

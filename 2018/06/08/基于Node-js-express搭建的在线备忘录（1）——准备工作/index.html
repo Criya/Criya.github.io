@@ -15,18 +15,22 @@
 
 
 
-<meta name="description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
-<meta name="keywords" content="JavaScript">
+<meta name="description" content="创建express项目首先创建工作目录12mkdir express-sticky-note &amp;amp;&amp;amp; cd express-sticky-note` 安装express和express-generator希望通过express的脚手架来生成快速生成一个项目框架123npm init -ynpm install express --savenpm install express-gen">
+<meta name="keywords" content="JavaScript,Node">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JavaScript学习笔记（一）">
-<meta property="og:url" content="http://criya.top/2018/04/20/JavaScript学习笔记（一）/index.html">
+<meta property="og:title" content="基于Node.js express搭建的在线备忘录（1）——准备工作">
+<meta property="og:url" content="http://criya.top/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/index.html">
 <meta property="og:site_name" content="Criya">
-<meta property="og:description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
+<meta property="og:description" content="创建express项目首先创建工作目录12mkdir express-sticky-note &amp;amp;&amp;amp; cd express-sticky-note` 安装express和express-generator希望通过express的脚手架来生成快速生成一个项目框架123npm init -ynpm install express --savenpm install express-gen">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-04-21T07:17:58.716Z">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-9306630edc04950e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-b646f477f0ec802f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5624859-5df50d5d84ba1f66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-06-08T01:10:34.333Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JavaScript学习笔记（一）">
-<meta name="twitter:description" content="数据类型多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。 123var s = `helloworld`s.length // 11 Objectnull表示空object，undefined表示空非object。 ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。 object的key在声明是必定为stri">
+<meta name="twitter:title" content="基于Node.js express搭建的在线备忘录（1）——准备工作">
+<meta name="twitter:description" content="创建express项目首先创建工作目录12mkdir express-sticky-note &amp;amp;&amp;amp; cd express-sticky-note` 安装express和express-generator希望通过express的脚手架来生成快速生成一个项目框架123npm init -ynpm install express --savenpm install express-gen">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5624859-9306630edc04950e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -58,7 +62,7 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>JavaScript学习笔记（一） | Criya</title>
+<title>基于Node.js express搭建的在线备忘录（1）——准备工作 | Criya</title>
 
 <script src="//cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js"></script>
@@ -266,11 +270,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-JavaScript学习笔记（一）" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-基于Node-js-express搭建的在线备忘录（1）——准备工作" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2018/04/20/JavaScript学习笔记（一）/" class="article-date">
-      <time datetime="2018-04-20T06:56:49.000Z" itemprop="datePublished">2018-04-20</time>
+      <a href="/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/" class="article-date">
+      <time datetime="2018-06-08T01:08:04.000Z" itemprop="datePublished">2018-06-08</time>
 </a>
 
 
@@ -285,7 +289,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      JavaScript学习笔记（一）
+      基于Node.js express搭建的在线备忘录（1）——准备工作
     </h1>
   
 
@@ -296,7 +300,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node/">Node</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -306,29 +310,45 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>多行字符串不要用\换行，防止转义了空格难以发现。尽量使用闭合引号+，或者使用ES6的 `  反引号。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var s = `hello</span><br><span class="line">world`</span><br><span class="line">s.length // 11</span><br></pre></td></tr></table></figure>
-<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>null表示空object，undefined表示空非object。</p>
-<p>ES5以后object的最后一个key-value可以跟逗号，也就是说IE8以下不兼容。</p>
-<p>object的key在声明是必定为string类型，若果不是的话自动转换为string。</p>
-<p>当需要用key索引时，用object.[index]的方式索引时，index必须为字符串，因为中括号获取object的属性它并不会自动给你转成字符串。</p>
-<p>当key为空字符串’’时，必须使用object[‘’]来获取。</p>
-<p>object.atr的atr等价于object[‘atr’],所以在for..in中不应该用.atr变量value。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> object)&#123;</span><br><span class="line">	<span class="comment">//错误，等价于object['key']，它会去访问你的object里有没'key'这个属性</span></span><br><span class="line">	<span class="built_in">console</span>.log(object.key)	  </span><br><span class="line">	<span class="built_in">console</span>.log(object[key])  <span class="comment">// 正确</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>在用点访问对象的属性时，这个属性必须满足标识符的命名规则</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="number">0</span>]) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">console</span>.log(a[<span class="string">'0'</span>]) <span class="comment">//0</span></span><br><span class="line"><span class="built_in">console</span>.log(a<span class="number">.0</span>) <span class="comment">//SyntaxError: Unexpected number</span></span><br><span class="line"><span class="built_in">console</span>.log(a.<span class="string">'0'</span>) <span class="comment">//SyntaxError: Unexpected string</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>将任意类型转为Boolean的方法</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">object.toString()</span><br><span class="line"><span class="built_in">String</span>(object)</span><br><span class="line"><span class="string">''</span> + object</span><br></pre></td></tr></table></figure>
-<h4 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h4><p>将任意类型转为Boolean的方法<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Boolean</span>(object)</span><br><span class="line">!!(object)</span><br></pre></td></tr></table></figure></p>
-<p>在JS中只有五个值时取Boolean为false的。<br>五个falsy值</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">!! underfined <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">null</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="string">''</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="number">0</span> <span class="comment">//false</span></span><br><span class="line">!! <span class="literal">NaN</span> <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
-<p>所有的object的布尔值都是true（typeof(null) === ‘object’ 就是一个bug）。</p>
-<h5 id="why-typeof-nul-object"><a href="#why-typeof-nul-object" class="headerlink" title="why typeof nul === object"></a>why typeof nul === object</h5><blockquote>
-<ol>
-<li>娘胎里带出来的.    JS类型值是存在32 BIT 单元里,32位有1-3位表示TYPE TAG,其它位表示真实值   而表示object的标记位正好是低三位都是0    000: object. The data is a reference to an object.   而js  里的Null 是机器码NULL空指针, (0x00 is most platforms).所以空指针引用 加上 对象标记还是0,最终体现的类型还是object..这也就是为什么Number(null)===0吧…The history of “typeof null”2. 曾经有提案 typeof null === ‘null’.但提案被拒绝harmony:typeof_null [ES Wiki]</li>
-</ol>
-</blockquote>
-<h4 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h4><p>将任意类型转为Number的方法</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Number</span>(<span class="string">'1'</span>) <span class="comment">//1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">'088'</span>) <span class="comment">//88</span></span><br><span class="line"><span class="built_in">parseFloat</span>(<span class="string">'0.23d'</span>) <span class="comment">//0.23</span></span><br><span class="line"><span class="string">'1'</span> - <span class="number">0</span> <span class="comment">//1</span></span><br><span class="line">+<span class="string">'1'</span> <span class="comment">//1</span></span><br><span class="line">-(-<span class="string">'1'</span>) <span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+        <h3 id="创建express项目"><a href="#创建express项目" class="headerlink" title="创建express项目"></a>创建express项目</h3><h4 id="首先创建工作目录"><a href="#首先创建工作目录" class="headerlink" title="首先创建工作目录"></a>首先创建工作目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir express-sticky-note &amp;&amp; <span class="built_in">cd</span> express-sticky-note</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<h4 id="安装express和express-generator"><a href="#安装express和express-generator" class="headerlink" title="安装express和express-generator"></a>安装express和express-generator</h4><p>希望通过express的脚手架来生成快速生成一个项目框架<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm init -y</span><br><span class="line">npm install express --save</span><br><span class="line">npm install express-generator --save-dev</span><br></pre></td></tr></table></figure></p>
+<h4 id="生成express项目"><a href="#生成express项目" class="headerlink" title="生成express项目"></a>生成express项目</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node node_modules/express-generator/bin/express-cli.js . -f -e --git	<span class="comment"># -f无视空文件夹提示 -e ejs模板 --git 生成git ignore</span></span><br><span class="line">npm install <span class="comment">#安装依赖包</span></span><br><span class="line"></span><br><span class="line">DEBUG=express-sticky-note:* npm start <span class="comment">#成功运行</span></span><br></pre></td></tr></table></figure>
+<h3 id="项目结构分析"><a href="#项目结构分析" class="headerlink" title="项目结构分析"></a>项目结构分析</h3><p>通过generator我们可以快速生成一个应用，由下面文件组成<br><img src="https://upload-images.jianshu.io/upload_images/5624859-9306630edc04950e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>我们启动这个应用的命令是<code>npm start</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "start": "node ./bin/www"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>查看package.json可以知道<code>npm start</code>实际上就是运行<code>./bin/www</code>，这个www就相当于main.js。</p>
+<p>这个www是项目启动的开关也就是服务器的开关，主要作用：</p>
+<pre><code>1. 加载包
+2. 设定端口(通过`process.env.PORT`可以在命令行启动时设置端口)
+3. 绑定应用(`http.createServer(app)`app是后台主要逻辑部分)
+4. 应用启动监听
+5. 异常处理
+</code></pre><p>app.js才是我们后台的核心代码，简要分析一下它的功能</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 设置渲染引擎 */</span></span><br><span class="line"><span class="comment">// 设置渲染模板在当前目录下的views文件夹</span></span><br><span class="line">app.set(<span class="string">'views'</span>, path.join(__dirname, <span class="string">'views'</span>));</span><br><span class="line"><span class="comment">// 设置渲染引擎种类</span></span><br><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 设置静态路径(绕过路由) */</span></span><br><span class="line">app.use(express.static(path.join(__dirname, <span class="string">'public'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 路由逻辑中间件分发 */</span></span><br><span class="line">app.use(<span class="string">'/'</span>, indexRouter);</span><br><span class="line">app.use(<span class="string">'/users'</span>, usersRouter);</span><br></pre></td></tr></table></figure>
+<h4 id="前后端交互的逻辑"><a href="#前后端交互的逻辑" class="headerlink" title="前后端交互的逻辑"></a>前后端交互的逻辑</h4><p>一次前后端交互的逻辑可以简单分为下面几部</p>
+<pre><code>1. 服务器拿到收到请求
+2. 根据请求路径路由到不同的逻辑
+3. 决定响应的功能
+    1. URL带参数的AJAX请求：返回数据
+    2. 页面请求：根据数据库和模板渲染网页返回
+</code></pre><h3 id="创建前端工作环境"><a href="#创建前端工作环境" class="headerlink" title="创建前端工作环境"></a>创建前端工作环境</h3><h4 id="创建工作路径"><a href="#创建工作路径" class="headerlink" title="创建工作路径"></a>创建工作路径</h4><p>现在，我们已经将整个框架搭建好了，虽然网页的前端部分实际上是访问public文件夹下的资源，但这并不是我们的原始文件而是打包后的文件。</p>
+<p>我们创建如下工作环境<br><img src="https://upload-images.jianshu.io/upload_images/5624859-b646f477f0ec802f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>我们先按功能分类：在js中存放我们的js代码，img存放原始图片，less存放我们的less样式。<br>在js中再按照应用分类：app为主要逻辑代码，lib为引用的库，mod为引用的组件。</p>
+<h4 id="安装配置webpack"><a href="#安装配置webpack" class="headerlink" title="安装配置webpack"></a>安装配置webpack</h4><p>src只是我们的开发文件，用户真正访问的是经过打包后的文件，这里我使用webpack来打包编译我们的代码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-div webpack</span><br></pre></td></tr></table></figure>
+<p>接下来我们做一个简单的模块测试，再创建一个简单的webpack.config.js配置文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** src/webpack.config.js */</span></span><br><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    entry: path.join(__dirname, <span class="string">"js/app/index.js"</span>),</span><br><span class="line">    output: &#123;</span><br><span class="line">        path : path.join(__dirname, <span class="string">"../public/js"</span>),</span><br><span class="line">        filename : <span class="string">"index.js"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行webpack，成功</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/5624859-5df50d5d84ba1f66.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>这样我们每次都需要在src下编译文件，非常不方便，我们设置一下npm的package.json来用快捷方式编译文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "webpack": "webpack --config=src/webpack.config.js"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>只需要添加一行配置就可以直接在目录下<code>npm run webpack</code>编译文件。</p>
+<h4 id="动态更新编译"><a href="#动态更新编译" class="headerlink" title="动态更新编译"></a>动态更新编译</h4><p>我们不希望每次更新都需要我们手动<code>npm run webpack</code>，我们可以借助onchange。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-div onchange</span><br><span class="line"><span class="comment">#onchange 'app/**/*.js' 'test/**/*.js' -- npm test</span></span><br></pre></td></tr></table></figure>
+<p>它的语法非常简单<code>src/**/*.js</code>可以监听src文件下所有层级的js文件。</p>
+<p>现在配置一下package.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "onchange": "onchange 'src/**/*.js' 'src/**/*.less' -- npm run webpack"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们只需要执行<code>npm run webpack</code>即可开始写代码。</p>
 
       
     </div>
@@ -337,13 +357,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2018/04/20/JavaScript学习笔记（一）/">JavaScript学习笔记（一）</a></p>
+        <p><span>本文标题:</span><a href="/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/">基于Node.js express搭建的在线备忘录（1）——准备工作</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Liang Jiahao</a></p>
-        <p><span>发布时间:</span>2018-04-20, 14:56:49</p>
-        <p><span>最后更新:</span>2018-04-21, 15:17:58</p>
+        <p><span>发布时间:</span>2018-06-08, 09:08:04</p>
+        <p><span>最后更新:</span>2018-06-08, 09:10:34</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2018/04/20/JavaScript学习笔记（一）/" title="JavaScript学习笔记（一）">http://criya.top/2018/04/20/JavaScript学习笔记（一）/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://criya.top/2018/04/20/JavaScript学习笔记（一）/　　作者: Liang Jiahao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/" title="基于Node.js express搭建的在线备忘录（1）——准备工作">http://criya.top/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://criya.top/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/　　作者: Liang Jiahao" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -355,16 +375,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2018/04/21/Go-学习记录（一）/">
-                    Go 学习记录（一）
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2018/03/29/初识HTTP/">
-                    初识HTTP
+                <a href="/2018/05/21/AJAX学习笔记/">
+                    AJAX学习笔记
                 </a>
             </div>
         
@@ -376,7 +390,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">1.</span> <span class="toc-text">数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Object"><span class="toc-number">1.1.</span> <span class="toc-text">Object</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类型转换"><span class="toc-number">1.2.</span> <span class="toc-text">类型转换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#String"><span class="toc-number">1.2.1.</span> <span class="toc-text">String</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Boolean"><span class="toc-number">1.2.2.</span> <span class="toc-text">Boolean</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#why-typeof-nul-object"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">why typeof nul === object</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Number"><span class="toc-number">1.2.3.</span> <span class="toc-text">Number</span></a></li></ol></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建express项目"><span class="toc-number">1.</span> <span class="toc-text">创建express项目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#首先创建工作目录"><span class="toc-number">1.1.</span> <span class="toc-text">首先创建工作目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装express和express-generator"><span class="toc-number">1.2.</span> <span class="toc-text">安装express和express-generator</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#生成express项目"><span class="toc-number">1.3.</span> <span class="toc-text">生成express项目</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目结构分析"><span class="toc-number">2.</span> <span class="toc-text">项目结构分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前后端交互的逻辑"><span class="toc-number">2.1.</span> <span class="toc-text">前后端交互的逻辑</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建前端工作环境"><span class="toc-number">3.</span> <span class="toc-text">创建前端工作环境</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建工作路径"><span class="toc-number">3.1.</span> <span class="toc-text">创建工作路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装配置webpack"><span class="toc-number">3.2.</span> <span class="toc-text">安装配置webpack</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#动态更新编译"><span class="toc-number">3.3.</span> <span class="toc-text">动态更新编译</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -412,7 +426,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"JavaScript学习笔记（一）　| Criya　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"基于Node.js express搭建的在线备忘录（1）——准备工作　| Criya　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -431,8 +445,8 @@
     <div id="disqus_thread"></div>
     <script>
         var disqus_config = function(){
-            this.page.url = 'http://criya.top/2018/04/20/JavaScript学习笔记（一）/';
-            this.page.identifier = '2018/04/20/JavaScript学习笔记（一）/';
+            this.page.url = 'http://criya.top/2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/';
+            this.page.identifier = '2018/06/08/基于Node-js-express搭建的在线备忘录（1）——准备工作/';
         };
         var loadComment = function(){
             var d = document, s = d.createElement('script');
@@ -454,15 +468,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2018/04/21/Go-学习记录（一）/" title="上一篇: Go 学习记录（一）">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2018/03/29/初识HTTP/" title="下一篇: 初识HTTP">
+            <a href="/2018/05/21/AJAX学习笔记/" title="下一篇: AJAX学习笔记">
                 <i class="fa fa-angle-right"></i>
             </a>
         
