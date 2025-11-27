@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>2025 投资实盘监控 | LIANG JIAHAO</title>
     
-    <!-- 1. Styles & Fonts -->
+    <!-- 1. Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -14,30 +14,34 @@
             font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Inter', sans-serif;
             background-color: #f3f4f6;
             -webkit-font-smoothing: antialiased;
-            overscroll-behavior-y: none; /* Prevent rubber-banding on mobile */
+            overscroll-behavior-y: none;
         }
-        /* Hide scrollbar for mobile tables */
+        /* Mobile optimization for tables */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Spin Animation */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
         
-        /* Pulse Animation */
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
         .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* Smooth modal animation */
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
     </style>
 
-    <!-- 2. React & Babel (No Build Step Required) -->
+    <!-- 2. React & Babel (Standard Public CDN - Universal Access) -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
   }
 }
@@ -51,35 +55,36 @@
     <script type="text/babel">
         const { useState, useEffect, useCallback, useMemo } = React;
 
-        // --- Constants & Data ---
+        // --- Constants ---
         const CASH_POOL_CNY = 3000.00;
         const DEFAULT_EXCHANGE_RATE = 7.25;
         const REFRESH_INTERVAL_MS = 10000;
         const DEFAULT_FINNHUB_KEY = 'd4jul8pr01qgcb0vme30d4jul8pr01qgcb0vme3g';
 
         const INITIAL_PORTFOLIO = [
-            // US Stocks
             { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 241.580 },
             { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.670 },
             { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.840 },
             { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.110 },
-            // CN Stocks
             { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.670 },
             { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.210 },
             { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.860 }
         ];
 
-        // --- Icons (Inline SVGs to avoid dependencies) ---
+        // --- Icons (Inline SVG Components - No Dependencies) ---
+        const IconWrapper = ({ children, className, ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
+        );
         const Icons = {
-            Settings: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.35a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
-            RefreshCw: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 21H3v-5"/></svg>,
-            Activity: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-            Globe: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-            DollarSign: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
-            TrendingUp: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-            X: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
-            Save: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>,
-            Key: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+            Settings: (p) => <IconWrapper {...p}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.35a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></IconWrapper>,
+            RefreshCw: (p) => <IconWrapper {...p}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 21H3v-5"/></IconWrapper>,
+            Activity: (p) => <IconWrapper {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></IconWrapper>,
+            Globe: (p) => <IconWrapper {...p}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></IconWrapper>,
+            DollarSign: (p) => <IconWrapper {...p}><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></IconWrapper>,
+            TrendingUp: (p) => <IconWrapper {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></IconWrapper>,
+            X: (p) => <IconWrapper {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconWrapper>,
+            Save: (p) => <IconWrapper {...p}><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></IconWrapper>,
+            Key: (p) => <IconWrapper {...p}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></IconWrapper>
         };
 
         // --- Utilities ---
@@ -89,31 +94,36 @@
                 if (value < 0) return type === 'text' ? 'text-emerald-500' : 'bg-emerald-500 text-white';
                 return type === 'text' ? 'text-gray-400' : 'bg-gray-100 text-gray-500';
             },
-            formatCurrency: (val, currency) => {
-                return `${currency}${val.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            },
-            formatPercent: (val) => {
-                const sign = val > 0 ? '+' : '';
-                return `${sign}${val.toFixed(2)}%`;
-            },
+            formatCurrency: (val, currency) => `${currency}${val.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            formatPercent: (val) => `${val > 0 ? '+' : ''}${val.toFixed(2)}%`,
+            
+            // Fixed Market Logic: Explicitly converts to Target Timezones
             checkMarketOpen: () => {
                 const now = new Date();
-                const day = now.getDay();
-                const isWeekend = (day === 0 || day === 6);
-                
-                // CN: 9:15-15:05 UTC+8
-                const hour = now.getHours();
-                const minute = now.getMinutes();
-                const timeVal = hour * 100 + minute;
-                let isCNOpen = !isWeekend && (timeVal >= 915 && timeVal <= 1505);
-                if (timeVal > 1135 && timeVal < 1255) isCNOpen = false;
+                const isWeekend = now.getDay() === 0 || now.getDay() === 6;
 
-                // US: Mon-Fri 04:00-20:00 ET (Simplified)
-                const nyTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
-                const nyDate = new Date(nyTimeStr);
-                const nyDay = nyDate.getDay();
-                const nyHour = nyDate.getHours();
-                const isUSOpen = (nyDay !== 0 && nyDay !== 6) && (nyHour >= 4 && nyHour < 20);
+                // 1. A-Share (Beijing Time: UTC+8)
+                // Trading Hours: 09:30-11:30, 13:00-15:00
+                const cnTimeStr = now.toLocaleString("en-US", { timeZone: "Asia/Shanghai", hour12: false });
+                const cnDate = new Date(cnTimeStr);
+                const cnDay = cnDate.getDay();
+                const cnTime = cnDate.getHours() * 100 + cnDate.getMinutes();
+                
+                const isCNWeekend = cnDay === 0 || cnDay === 6;
+                const isCNMorning = (cnTime >= 930 && cnTime <= 1130);
+                const isCNAfternoon = (cnTime >= 1300 && cnTime <= 1500);
+                const isCNOpen = !isCNWeekend && (isCNMorning || isCNAfternoon);
+
+                // 2. US Market (New York Time)
+                // Trading Hours (Core): 09:30-16:00, but logic asks for 04:00-20:00 (Extended)
+                const usTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York", hour12: false });
+                const usDate = new Date(usTimeStr);
+                const usDay = usDate.getDay();
+                const usHour = usDate.getHours();
+                
+                const isUSWeekend = usDay === 0 || usDay === 6;
+                // Extended hours: 4 AM to 8 PM
+                const isUSOpen = !isUSWeekend && (usHour >= 4 && usHour < 20);
 
                 return { cn: isCNOpen, us: isUSOpen };
             }
@@ -127,6 +137,7 @@
                     if (cnItems.length === 0) return resolve(new Map());
 
                     const codes = cnItems.map(p => p.code).join(',');
+                    // Create unique callback for script
                     const script = document.createElement('script');
                     script.src = `https://qt.gtimg.cn/q=${codes}`;
                     
@@ -145,7 +156,10 @@
                         document.body.removeChild(script);
                         resolve(priceMap);
                     };
-                    script.onerror = () => resolve(new Map());
+                    script.onerror = () => {
+                        document.body.removeChild(script);
+                        resolve(new Map());
+                    }
                     document.body.appendChild(script);
                 });
             },
@@ -175,7 +189,6 @@
         };
 
         // --- Components ---
-        
         const SummaryCard = ({ title, mainValue, subValue, plValue, plText, isPrimary, extraInfo, icon }) => {
             const trendClass = utils.getTrendClass(plValue, isPrimary ? 'bg' : 'text');
             const CardWrapper = ({ children }) => isPrimary ? (
@@ -195,7 +208,7 @@
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="flex justify-between items-start">
                             <div className="flex items-center gap-2">
-                                <span className="text-gray-400">{icon}</span>
+                                <span className={isPrimary ? "text-gray-400" : "text-gray-400"}>{icon}</span>
                                 <h3 className={`text-xs font-bold uppercase tracking-wider ${isPrimary ? 'text-gray-400' : 'text-gray-500'}`}>{title}</h3>
                             </div>
                             <span className={`text-xs font-bold px-2 py-1 rounded-md ${isPrimary ? trendClass : (plValue >= 0 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600')}`}>
@@ -296,7 +309,8 @@
             useEffect(() => {
                 const updateStatus = () => setMarketStatus(utils.checkMarketOpen());
                 updateStatus();
-                const t = setInterval(updateStatus, 60000);
+                // Check every 10 seconds to update lights promptly
+                const t = setInterval(updateStatus, 10000);
                 return () => clearInterval(t);
             }, []);
 
