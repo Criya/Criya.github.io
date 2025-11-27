@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 投资实盘监控 | LIANG JIAHAO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        /* 统一配色：红涨绿跌 (符合中国/香港App习惯) */
+        .text-up { color: #ef4444; font-weight: bold; }   
+        .text-down { color: #22c55e; font-weight: bold; } 
+        .bg-up { background-color: #ef4444; color: white; }
+        .bg-down { background-color: #22c55e; color: white; }
+        .text-flat { color: #9ca3af; }
+
+        /* 状态点 */
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+        .dot-live { background-color: #ef4444; box-shadow: 0 0 4px #ef4444; animation: pulse 2s infinite; }
+        .dot-sleep { background-color: #d1d5db; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="text-gray-700 pb-20">
+
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">L</div>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-800 tracking-tight">LIANG JIAHAO 的实盘</h1>
+                    <div class="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                        <span class="flex items-center" title="A股状态"><span id="cnStatusDot" class="status-dot dot-sleep"></span>A股</span>
+                        <span class="flex items-center" title="美股状态"><span id="usStatusDot" class="status-dot dot-sleep"></span>美股</span>
+                        <span class="border-l pl-3 font-mono" id="realClock">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="toggleSettings()" class="p-2 text-gray-400 hover:text-gray-600 transition-colors" title="API 设置">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+                <button onclick="manualRefresh()" class="btn-refresh flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium shadow-md">
+                    <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    全量刷新
+                </button>
+            </div>
+        </div>
+        
+        <div id="settingsPanel" class="hidden border-t border-gray-100 bg-gray-50 p-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
+                <input type="text" id="finnhubKey" placeholder="输入 Finnhub Key (美股数据)" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+                <button onclick="saveSettings()" class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card p-6 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+                <h3 class="text-sm font-medium text-gray-400 uppercase">总资产净值 (CNY)</h3>
+                <div class="mt-2 flex items-baseline gap-3">
+                    <span class="text-4xl font-bold tracking-tight" id="totalAssetDisplay">--</span>
+                    <span id="totalPLDisplay" class="text-sm font-bold px-2 py-1 rounded bg-gray-700">--</span>
+                </div>
+                <div class="mt-4 text-xs text-gray-400 flex justify-between">
+                    <span>汇率: 1 USD = <span id="exchangeRate">7.25</span> CNY</span>
+                    <span>含现金池 ¥3,000</span>
+                </div>
+            </div>
+
+            <div class="card p-6 border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase">🇺🇸 美股持仓</h3>
+                    <span id="usPLDisplay" class="text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-400">--</span>
+                </div>
+                <div class="mt-4 flex justify-between items-end">
+                    <div>
+                        <span class="text-3xl font-bold text-gray-800" id="usMarketValue">--</span>
+                        <div class="text-xs text-gray-500 mt-1">投入成本: <span id="usCostDisplay">--</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-6 border-l-4 border-red-500">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase">🇨🇳 A股持仓</h3>
+                    <span id="cnPLDisplay" class="text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-400">--</span>
+                </div>
+                <div class="mt-4 flex justify-between items-end">
+                    <div>
+                        <span class="text-3xl font-bold text-gray-800" id="cnMarketValue">--</span>
+                        <div class="text-xs text-gray-500 mt-1">投入成本: <span id="cnCostDisplay">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-gray-800">持仓明细监控</h3>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs text-gray-500">涨</span>
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-xs text-gray-500">跌</span>
+                    <span class="text-xs text-gray-400 border-l pl-2 ml-2" id="refreshStatus">等待调度...</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3">标的</th>
+                            <th class="px-6 py-3 text-right">数量</th>
+                            <th class="px-6 py-3 text-right">成本 (App)</th>
+                            <th class="px-6 py-3 text-right">现价</th>
+                            <th class="px-6 py-3 text-right">市值</th>
+                            <th class="px-6 py-3 text-right">浮动盈亏</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positionTableBody" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="scriptContainer"></div>
+
+    <script>
+        // --- 1. 基础配置 (数据来源：App截图真实数据) ---
+        const portfolio = [
+            // 美股 (HSBC App)
+            { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 241.580 },
+            { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.670 }, // 使用 SPYM 代码获取行情 (Finnhub支持)
+            { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.840 },
+            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.110 },
+            
+            // A股 (中信证券 App)
+            { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.670 },
+            { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.210 },
+            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.860 }
+        ];
+        
+        let cashCNY = 3000.00; // 标准券/资金池
+        let usdRate = 7.25; 
+        let finnhubKey = localStorage.getItem('finnhubKey') || '';
+        let timer = null;
+
+        // --- 2. 启动 ---
+        window.onload = function() {
+            document.getElementById('finnhubKey').value = finnhubKey;
+            startClock();
+            fetchSmartData(true);
+            timer = setInterval(() => fetchSmartData(false), 10000);
+        };
+
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('realClock').innerText = now.toLocaleTimeString();
+            }, 1000);
+        }
+
+        // --- 3. 智能调度 ---
+        function checkMarketOpen() {
+            const now = new Date();
+            const day = now.getDay(); 
+            const isWeekend = (day === 0 || day === 6);
+            
+            // A股: 工作日 9:15-15:05 (简化)
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const timeVal = hour * 100 + minute;
+            let isCNOpen = !isWeekend && (timeVal >= 915 && timeVal <= 1505);
+            if (timeVal > 1135 && timeVal < 1255) isCNOpen = false;
+
+            // 美股: 纽约时间工作日 04:00-20:00
+            const nyTimeStr = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+            const nyDate = new Date(nyTimeStr);
+            const nyDay = nyDate.getDay();
+            const nyHour = nyDate.getHours();
+            let isUSOpen = (nyDay !== 0 && nyDay !== 6) && (nyHour >= 4 && nyHour < 20);
+
+            return { cn: isCNOpen, us: isUSOpen };
+        }
+
+        async function fetchSmartData(forceAll = false) {
+            const status = checkMarketOpen();
+            // 更新状态灯
+            document.getElementById('cnStatusDot').className = status.cn ? 'status-dot dot-live' : 'status-dot dot-sleep';
+            document.getElementById('usStatusDot').className = status.us ? 'status-dot dot-live' : 'status-dot dot-sleep';
+            
+            const tasks = [];
+            const msgDom = document.getElementById('refreshStatus');
+
+            if (forceAll || status.cn) tasks.push(fetchCNStocksTencent());
+            if (forceAll || status.us) tasks.push(fetchUSStocks());
+            if (forceAll || status.cn || status.us) tasks.push(fetchExchangeRate());
+
+            if (tasks.length > 0) {
+                document.getElementById('refreshIcon').classList.add('spin');
+                msgDom.innerText = "更新中...";
+                try {
+                    await Promise.all(tasks);
+                    renderAll();
+                    msgDom.innerText = "最后更新: " + new Date().toLocaleTimeString();
+                } catch(e) { console.error(e); } 
+                finally { document.getElementById('refreshIcon').classList.remove('spin'); }
+            } else {
+                renderAll(); 
+                msgDom.innerText = "双市场休市";
+            }
+        }
+
+        // --- 4. 接口 ---
+        async function fetchExchangeRate() {
+            try {
+                const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=CNY');
+                const data = await res.json();
+                usdRate = data.rates.CNY;
+                document.getElementById('exchangeRate').innerText = usdRate.toFixed(4);
+            } catch(e) {}
+        }
+
+        function fetchCNStocksTencent() {
+            return new Promise((resolve) => {
+                const codes = portfolio.filter(p => p.market === 'cn').map(p => p.code).join(',');
+                const script = document.createElement('script');
+                script.src = `https://qt.gtimg.cn/q=${codes}`;
+                script.onload = () => {
+                    portfolio.forEach(p => {
+                        if (p.market === 'cn') {
+                            try {
+                                const varName = `v_${p.code}`;
+                                if (window[varName]) {
+                                    const parts = window[varName].split('~');
+                                    const current = parseFloat(parts[3]);
+                                    if (current > 0) p.currentPrice = current;
+                                }
+                            } catch(e) {}
+                        }
+                    });
+                    resolve();
+                };
+                script.onerror = resolve; 
+                document.getElementById('scriptContainer').innerHTML = '';
+                document.getElementById('scriptContainer').appendChild(script);
+            });
+        }
+
+        async function fetchUSStocks() {
+            if (!finnhubKey) return;
+            // 美股代码映射: SPYM 在某些接口可能仍需查 SPLG，但 Finnhub 通常支持新代码。
+            // 如遇问题，可尝试将 SPYM 改回 SPLG，或者 SPLG.US
+            for (let p of portfolio) {
+                if (p.market === 'us') {
+                    try {
+                        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${p.code}&token=${finnhubKey}`);
+                        const data = await res.json();
+                        if (data.c) p.currentPrice = data.c;
+                    } catch(e) {}
+                }
+            }
+        }
+
+        // --- 5. 渲染 ---
+        function renderAll() {
+            let totalCNY = cashCNY;
+            let usValUSD = 0, usCostUSD = 0;
+            let cnValCNY = 0, cnCostCNY = 0;
+            const tbody = document.getElementById('positionTableBody');
+            tbody.innerHTML = '';
+
+            portfolio.forEach(p => {
+                const current = p.currentPrice || p.cost;
+                const val = current * p.shares;
+                const costVal = p.cost * p.shares;
+                const pl = val - costVal;
+                const plPct = (pl / costVal) * 100;
+                
+                if (p.market === 'us') { usValUSD += val; usCostUSD += costVal; } 
+                else { cnValCNY += val; cnCostCNY += costVal; }
+
+                let plClass = 'text-flat';
+                let sign = '';
+                if (pl > 0) { sign='+'; plClass = 'text-up'; }
+                if (pl < 0) { sign=''; plClass = 'text-down'; }
+
+                const currency = p.market === 'us' ? '$' : '¥';
+                const costDisplay = p.cost.toFixed(3); // 显示3位小数的精确成本
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-white transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-gray-800">${p.name}</div>
+                            <div class="text-xs text-gray-400">${p.code}</div>
+                        </td>
+                        <td class="px-6 py-4 text-right font-mono">${p.shares}</td>
+                        <td class="px-6 py-4 text-right text-gray-500">${costDisplay}</td>
+                        <td class="px-6 py-4 text-right font-bold ${plClass}">${current.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-mono">${currency}${val.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right ${plClass}">
+                            ${sign}${pl.toFixed(2)} <span class="text-xs opacity-75">(${sign}${plPct.toFixed(2)}%)</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const usValCNY = usValUSD * usdRate;
+            const usCostCNY = usCostUSD * usdRate;
+            const finalAsset = totalCNY + cnValCNY + usValCNY;
+            const totalCost = totalCNY + cnCostCNY + usCostCNY;
+            
+            const totalPL = finalAsset - totalCost;
+            const totalPLPct = (totalPL / totalCost) * 100;
+
+            // 分市场
+            const usPL = usValUSD - usCostUSD;
+            const usPLPct = usCostUSD > 0 ? (usPL / usCostUSD) * 100 : 0;
+            const cnPL = cnValCNY - cnCostCNY;
+            const cnPLPct = cnCostCNY > 0 ? (cnPL / cnCostCNY) * 100 : 0;
+
+            // DOM 更新
+            document.getElementById('totalAssetDisplay').innerText = '¥' + finalAsset.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            updatePLDisplay('totalPLDisplay', totalPL, totalPLPct, '¥');
+
+            document.getElementById('usMarketValue').innerText = '$' + usValUSD.toFixed(2);
+            document.getElementById('usCostDisplay').innerText = '$' + usCostUSD.toFixed(2);
+            updatePLDisplay('usPLDisplay', usPL, usPLPct, '$');
+
+            document.getElementById('cnMarketValue').innerText = '¥' + cnValCNY.toFixed(2);
+            document.getElementById('cnCostDisplay').innerText = '¥' + cnCostCNY.toFixed(2);
+            updatePLDisplay('cnPLDisplay', cnPL, cnPLPct, '¥');
+        }
+
+        function updatePLDisplay(elementId, val, pct, currency) {
+            const el = document.getElementById(elementId);
+            const sign = val >= 0 ? '+' : '';
+            el.innerText = `${sign}${currency}${val.toFixed(2)} (${sign}${pct.toFixed(2)}%)`;
+            
+            if (val > 0) el.className = elementId === 'totalPLDisplay' 
+                ? 'text-sm font-bold px-2 py-1 rounded bg-up' 
+                : 'text-xs font-bold px-2 py-0.5 rounded bg-red-100 text-red-600';
+            else if (val < 0) el.className = elementId === 'totalPLDisplay' 
+                ? 'text-sm font-bold px-2 py-1 rounded bg-down' 
+                : 'text-xs font-bold px-2 py-0.5 rounded bg-green-100 text-green-600';
+            else el.className = 'text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500';
+        }
+
+        function manualRefresh() { fetchSmartData(true); }
+        function saveSettings() {
+            finnhubKey = document.getElementById('finnhubKey').value;
+            localStorage.setItem('finnhubKey', finnhubKey);
+            manualRefresh();
+        }
+        function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('hidden'); }
+    </script>
+</body>
+</html>
