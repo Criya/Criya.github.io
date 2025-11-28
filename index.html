@@ -1,459 +1,368 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2025 投资实盘监控 | LIANG JIAHAO</title>
-    
-    <!-- 1. Styles -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            -webkit-font-smoothing: antialiased;
-            overscroll-behavior-y: none;
-        }
-        /* Mobile optimization for tables */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        
+        body { font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin { animation: spin 1s linear infinite; }
         
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        /* 统一配色：红涨绿跌 */
+        .text-up { color: #ef4444; font-weight: bold; }   
+        .text-down { color: #22c55e; font-weight: bold; } 
+        .bg-up { background-color: #ef4444; color: white; }
+        .bg-down { background-color: #22c55e; color: white; }
+        .text-flat { color: #9ca3af; }
 
-        /* Smooth modal animation */
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+        /* 状态指示灯 */
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+        .dot-live { background-color: #ef4444; box-shadow: 0 0 4px #ef4444; animation: pulse 2s infinite; }
+        .dot-sleep { background-color: #d1d5db; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
-
-    <!-- 2. React & Babel (Standard Public CDN - Universal Access) -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
 </head>
-<body>
-    <div id="root"></div>
+<body class="text-gray-700 pb-20">
 
-    <!-- 3. Application Logic -->
-    <script type="text/babel">
-        const { useState, useEffect, useCallback, useMemo } = React;
+    <div class="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">L</div>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-800 tracking-tight">LIANG JIAHAO 的实盘</h1>
+                    <div class="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                        <span class="flex items-center" title="A股状态"><span id="cnStatusDot" class="status-dot dot-sleep"></span>A股</span>
+                        <span class="flex items-center" title="美股状态"><span id="usStatusDot" class="status-dot dot-sleep"></span>美股</span>
+                        <span class="border-l pl-3 font-mono" id="realClock">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="toggleSettings()" class="p-2 text-gray-400 hover:text-gray-600 transition-colors" title="API 设置">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+                <button onclick="manualRefresh()" class="btn-refresh flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg font-medium shadow-md">
+                    <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    全量刷新
+                </button>
+            </div>
+        </div>
+        
+        <div id="settingsPanel" class="hidden border-t border-gray-100 bg-gray-50 p-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
+                <input type="text" id="finnhubKey" placeholder="输入 Finnhub Key (用于美股实时数据)" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+                <button onclick="saveSettings()" class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600">保存</button>
+            </div>
+        </div>
+    </div>
 
-        // --- Constants ---
-        const CASH_POOL_CNY = 3000.00;
-        const DEFAULT_EXCHANGE_RATE = 7.25;
-        const REFRESH_INTERVAL_MS = 10000;
-        const DEFAULT_FINNHUB_KEY = 'd4jul8pr01qgcb0vme30d4jul8pr01qgcb0vme3g';
+    <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
-        const INITIAL_PORTFOLIO = [
-            { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 241.580 },
-            { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.670 },
-            { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.840 },
-            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.110 },
-            { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.670 },
-            { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.210 },
-            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.860 }
-        ];
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card p-6 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+                <h3 class="text-sm font-medium text-gray-400 uppercase">总资产净值 (CNY)</h3>
+                <div class="mt-2 flex items-baseline gap-3">
+                    <span class="text-4xl font-bold tracking-tight" id="totalAssetDisplay">--</span>
+                    <span id="totalPLDisplay" class="text-sm font-bold px-2 py-1 rounded bg-gray-700">--</span>
+                </div>
+                <div class="mt-4 text-xs text-gray-400 flex justify-between">
+                    <span>汇率: 1 USD = <span id="exchangeRate">7.25</span> CNY</span>
+                    <span>含现金池 <span id="cashDisplay">--</span></span>
+                </div>
+            </div>
 
-        // --- Icons (Inline SVG Components - No Dependencies) ---
-        const IconWrapper = ({ children, className, ...props }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
-        );
-        const Icons = {
-            Settings: (p) => <IconWrapper {...p}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.35a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></IconWrapper>,
-            RefreshCw: (p) => <IconWrapper {...p}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 21H3v-5"/></IconWrapper>,
-            Activity: (p) => <IconWrapper {...p}><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></IconWrapper>,
-            Globe: (p) => <IconWrapper {...p}><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></IconWrapper>,
-            DollarSign: (p) => <IconWrapper {...p}><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></IconWrapper>,
-            TrendingUp: (p) => <IconWrapper {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></IconWrapper>,
-            X: (p) => <IconWrapper {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconWrapper>,
-            Save: (p) => <IconWrapper {...p}><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></IconWrapper>,
-            Key: (p) => <IconWrapper {...p}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></IconWrapper>
-        };
+            <div class="card p-6 border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase">🇺🇸 美股持仓</h3>
+                    <span id="usPLDisplay" class="text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-400">--</span>
+                </div>
+                <div class="mt-4 flex justify-between items-end">
+                    <div>
+                        <span class="text-3xl font-bold text-gray-800" id="usMarketValue">--</span>
+                        <div class="text-xs text-gray-500 mt-1">投入成本: <span id="usCostDisplay">--</span></div>
+                    </div>
+                </div>
+            </div>
 
-        // --- Utilities ---
-        const utils = {
-            getTrendClass: (value, type = 'text') => {
-                if (value > 0) return type === 'text' ? 'text-red-500' : 'bg-red-500 text-white';
-                if (value < 0) return type === 'text' ? 'text-emerald-500' : 'bg-emerald-500 text-white';
-                return type === 'text' ? 'text-gray-400' : 'bg-gray-100 text-gray-500';
-            },
-            formatCurrency: (val, currency) => `${currency}${val.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-            formatPercent: (val) => `${val > 0 ? '+' : ''}${val.toFixed(2)}%`,
+            <div class="card p-6 border-l-4 border-red-500">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase">🇨🇳 A股持仓</h3>
+                    <span id="cnPLDisplay" class="text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-400">--</span>
+                </div>
+                <div class="mt-4 flex justify-between items-end">
+                    <div>
+                        <span class="text-3xl font-bold text-gray-800" id="cnMarketValue">--</span>
+                        <div class="text-xs text-gray-500 mt-1">投入成本: <span id="cnCostDisplay">--</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-gray-800">持仓明细监控</h3>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-xs text-gray-500">涨</span>
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-xs text-gray-500">跌</span>
+                    <span class="text-xs text-gray-400 border-l pl-2 ml-2" id="refreshStatus">等待调度...</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3">标的</th>
+                            <th class="px-6 py-3 text-right">数量</th>
+                            <th class="px-6 py-3 text-right">成本 (App)</th>
+                            <th class="px-6 py-3 text-right">现价</th>
+                            <th class="px-6 py-3 text-right">市值</th>
+                            <th class="px-6 py-3 text-right">浮动盈亏</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positionTableBody" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="scriptContainer"></div>
+
+    <script>
+        // =========================================================
+        // 🟢 核心数据区 (数据源: 2025.11.28 截图)
+        // =========================================================
+        
+        const portfolio = [
+            // --- 美股 (汇丰) ---
+            { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 245.00 },
+            { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.84 },
+            { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.84 }, // 依据截图修正
+            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.11 }, // 依据截图修正
             
-            // Fixed Market Logic: Explicitly converts to Target Timezones
-            checkMarketOpen: () => {
-                const now = new Date();
-                const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            // --- A股 (中信) ---
+            // 成本含佣金
+            { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.67 },
+            { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.21 },
+            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.86 }
+        ];
+        
+        // 资金池 (3000本金 + 42元利息)
+        let cashCNY = 3042.00; 
+        
+        // =========================================================
 
-                // 1. A-Share (Beijing Time: UTC+8)
-                // Trading Hours: 09:30-11:30, 13:00-15:00
-                const cnTimeStr = now.toLocaleString("en-US", { timeZone: "Asia/Shanghai", hour12: false });
-                const cnDate = new Date(cnTimeStr);
-                const cnDay = cnDate.getDay();
-                const cnTime = cnDate.getHours() * 100 + cnDate.getMinutes();
-                
-                const isCNWeekend = cnDay === 0 || cnDay === 6;
-                const isCNMorning = (cnTime >= 930 && cnTime <= 1130);
-                const isCNAfternoon = (cnTime >= 1300 && cnTime <= 1500);
-                const isCNOpen = !isCNWeekend && (isCNMorning || isCNAfternoon);
+        let usdRate = 7.25; 
+        let finnhubKey = localStorage.getItem('finnhubKey') || '';
+        let timer = null;
 
-                // 2. US Market (New York Time)
-                // Trading Hours (Core): 09:30-16:00, but logic asks for 04:00-20:00 (Extended)
-                const usTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York", hour12: false });
-                const usDate = new Date(usTimeStr);
-                const usDay = usDate.getDay();
-                const usHour = usDate.getHours();
-                
-                const isUSWeekend = usDay === 0 || usDay === 6;
-                // Extended hours: 4 AM to 8 PM
-                const isUSOpen = !isUSWeekend && (usHour >= 4 && usHour < 20);
-
-                return { cn: isCNOpen, us: isUSOpen };
-            }
+        // 页面加载启动
+        window.onload = function() {
+            document.getElementById('finnhubKey').value = finnhubKey;
+            document.getElementById('cashDisplay').innerText = '¥' + cashCNY.toLocaleString();
+            startClock();
+            fetchSmartData(true);
+            timer = setInterval(() => fetchSmartData(false), 10000);
         };
 
-        // --- Services ---
-        const services = {
-            fetchCNStocks: (items) => {
-                return new Promise((resolve) => {
-                    const cnItems = items.filter(i => i.market === 'cn');
-                    if (cnItems.length === 0) return resolve(new Map());
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('realClock').innerText = now.toLocaleTimeString();
+            }, 1000);
+        }
 
-                    const codes = cnItems.map(p => p.code).join(',');
-                    // Create unique callback for script
-                    const script = document.createElement('script');
-                    script.src = `https://qt.gtimg.cn/q=${codes}`;
-                    
-                    script.onload = () => {
-                        const priceMap = new Map();
-                        cnItems.forEach(p => {
+        // --- 智能调度 (判断开盘时间) ---
+        function checkMarketOpen() {
+            const now = new Date();
+            const day = now.getDay(); 
+            const isWeekend = (day === 0 || day === 6);
+            
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const timeVal = hour * 100 + minute;
+            let isCNOpen = !isWeekend && (timeVal >= 915 && timeVal <= 1505);
+            if (timeVal > 1135 && timeVal < 1255) isCNOpen = false;
+
+            const nyTimeStr = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+            const nyDate = new Date(nyTimeStr);
+            const nyDay = nyDate.getDay();
+            const nyHour = nyDate.getHours();
+            let isUSOpen = (nyDay !== 0 && nyDay !== 6) && (nyHour >= 4 && nyHour < 20);
+
+            return { cn: isCNOpen, us: isUSOpen };
+        }
+
+        // --- 数据获取调度 ---
+        async function fetchSmartData(forceAll = false) {
+            const status = checkMarketOpen();
+            document.getElementById('cnStatusDot').className = status.cn ? 'status-dot dot-live' : 'status-dot dot-sleep';
+            document.getElementById('usStatusDot').className = status.us ? 'status-dot dot-live' : 'status-dot dot-sleep';
+            
+            const tasks = [];
+            const msgDom = document.getElementById('refreshStatus');
+
+            if (forceAll || status.cn) tasks.push(fetchCNStocksTencent());
+            if (forceAll || status.us) tasks.push(fetchUSStocks());
+            if (forceAll || status.cn || status.us) tasks.push(fetchExchangeRate());
+
+            if (tasks.length > 0) {
+                document.getElementById('refreshIcon').classList.add('spin');
+                msgDom.innerText = "更新中...";
+                try {
+                    await Promise.all(tasks);
+                    renderAll();
+                    msgDom.innerText = "最后更新: " + new Date().toLocaleTimeString();
+                } catch(e) { console.error(e); } 
+                finally { document.getElementById('refreshIcon').classList.remove('spin'); }
+            } else {
+                renderAll(); 
+                msgDom.innerText = "双市场休市";
+            }
+        }
+
+        // --- 汇率接口 (Frankfurter) ---
+        async function fetchExchangeRate() {
+            try {
+                const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=CNY');
+                const data = await res.json();
+                usdRate = data.rates.CNY;
+                document.getElementById('exchangeRate').innerText = usdRate.toFixed(4);
+            } catch(e) {}
+        }
+
+        // --- A股接口 (腾讯财经) ---
+        function fetchCNStocksTencent() {
+            return new Promise((resolve) => {
+                const codes = portfolio.filter(p => p.market === 'cn').map(p => p.code).join(',');
+                const script = document.createElement('script');
+                script.src = `https://qt.gtimg.cn/q=${codes}`;
+                script.onload = () => {
+                    portfolio.forEach(p => {
+                        if (p.market === 'cn') {
                             try {
                                 const varName = `v_${p.code}`;
                                 if (window[varName]) {
                                     const parts = window[varName].split('~');
                                     const current = parseFloat(parts[3]);
-                                    if (!isNaN(current) && current > 0) priceMap.set(p.code, current);
+                                    if (current > 0) p.currentPrice = current;
                                 }
-                            } catch (e) {}
-                        });
-                        document.body.removeChild(script);
-                        resolve(priceMap);
-                    };
-                    script.onerror = () => {
-                        document.body.removeChild(script);
-                        resolve(new Map());
-                    }
-                    document.body.appendChild(script);
-                });
-            },
-            fetchUSStocks: async (items, apiKey) => {
-                if (!apiKey) return new Map();
-                const usItems = items.filter(i => i.market === 'us');
-                const priceMap = new Map();
-                
-                await Promise.all(usItems.map(async (item) => {
-                    try {
-                        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${item.code}&token=${apiKey}`);
-                        const data = await res.json();
-                        if (data.c) priceMap.set(item.code, data.c);
-                    } catch (e) {
-                        console.warn(`Failed US stock ${item.code}`, e);
-                    }
-                }));
-                return priceMap;
-            },
-            fetchExchangeRate: async () => {
-                try {
-                    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=CNY');
-                    const data = await res.json();
-                    return data.rates.CNY || null;
-                } catch (e) { return null; }
-            }
-        };
-
-        // --- Components ---
-        const SummaryCard = ({ title, mainValue, subValue, plValue, plText, isPrimary, extraInfo, icon }) => {
-            const trendClass = utils.getTrendClass(plValue, isPrimary ? 'bg' : 'text');
-            const CardWrapper = ({ children }) => isPrimary ? (
-                <div className="relative overflow-hidden rounded-2xl bg-gray-900 p-6 text-white shadow-xl shadow-gray-900/10 transition-transform active:scale-[0.99]">
-                    <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
-                    <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
-                    {children}
-                </div>
-            ) : (
-                <div className="relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50 transition-all hover:shadow-md active:scale-[0.99]">
-                    {children}
-                </div>
-            );
-
-            return (
-                <CardWrapper>
-                    <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2">
-                                <span className={isPrimary ? "text-gray-400" : "text-gray-400"}>{icon}</span>
-                                <h3 className={`text-xs font-bold uppercase tracking-wider ${isPrimary ? 'text-gray-400' : 'text-gray-500'}`}>{title}</h3>
-                            </div>
-                            <span className={`text-xs font-bold px-2 py-1 rounded-md ${isPrimary ? trendClass : (plValue >= 0 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600')}`}>
-                                {plText}
-                            </span>
-                        </div>
-                        <div className="mt-4">
-                            <div className={`text-3xl font-bold tracking-tight ${isPrimary ? 'text-white' : 'text-gray-900'}`}>{mainValue}</div>
-                            <div className={`text-xs mt-2 font-medium flex items-center gap-1 ${isPrimary ? 'text-gray-400' : 'text-gray-500'}`}>
-                                <span>投入成本:</span><span className="font-mono">{subValue}</span>
-                            </div>
-                        </div>
-                        {extraInfo && <div className={`mt-4 pt-4 border-t text-xs flex justify-between ${isPrimary ? 'border-gray-800 text-gray-500' : 'border-gray-100 text-gray-400'}`}>{extraInfo}</div>}
-                    </div>
-                </CardWrapper>
-            );
-        };
-
-        const Header = ({ onOpenSettings, onRefresh, isRefreshing, marketStatus }) => {
-            const [timeStr, setTimeStr] = useState('--:--:--');
-            useEffect(() => {
-                const t = setInterval(() => setTimeStr(new Date().toLocaleTimeString('zh-CN', { hour12: false })), 1000);
-                return () => clearInterval(t);
-            }, []);
-
-            const StatusDot = ({ active, label }) => (
-                <div className="flex items-center gap-1.5">
-                    <span className="relative flex h-2.5 w-2.5">
-                        {active && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>}
-                        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${active ? 'bg-red-500' : 'bg-gray-300'}`}></span>
-                    </span>
-                    <span className="text-xs font-medium text-gray-500">{label}</span>
-                </div>
-            );
-
-            return (
-                <header className="sticky top-0 z-40 w-full backdrop-blur-lg bg-white/80 border-b border-gray-200/60 shadow-sm">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between items-center h-16">
-                            <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20 text-lg">L</div>
-                                <div className="flex flex-col">
-                                    <h1 className="text-base font-bold text-gray-900 leading-none">LIANG 的实盘</h1>
-                                    <div className="flex items-center gap-3 mt-1.5">
-                                        <StatusDot active={marketStatus.cn} label="A股" />
-                                        <StatusDot active={marketStatus.us} label="美股" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2 sm:gap-4">
-                                <div className="hidden sm:block font-mono text-xs text-gray-400 font-medium tabular-nums bg-gray-50 px-2 py-1 rounded border border-gray-100">{timeStr}</div>
-                                <button onClick={onOpenSettings} className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"><Icons.Settings className="w-5 h-5" /></button>
-                                <button onClick={onRefresh} disabled={isRefreshing} className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-md transition-all active:scale-95 disabled:opacity-70">
-                                    <span className={isRefreshing ? 'animate-spin' : ''}><Icons.RefreshCw className="w-4 h-4" /></span>
-                                    <span className="hidden sm:inline">刷新</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-            );
-        };
-
-        const SettingsModal = ({ isOpen, onClose, currentKey, onSave }) => {
-            const [key, setKey] = useState(currentKey);
-            if (!isOpen) return null;
-            return (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-slide-up">
-                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 className="font-semibold text-gray-900">系统设置</h3>
-                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><Icons.X className="w-5 h-5" /></button>
-                        </div>
-                        <div className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2"><Icons.Key className="w-4 h-4 text-gray-400" /> Finnhub API Key</label>
-                                <input type="text" value={key} onChange={(e) => setKey(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-sm font-mono text-gray-600" />
-                            </div>
-                        </div>
-                        <div className="px-6 py-4 bg-gray-50 flex justify-end">
-                            <button onClick={() => { onSave(key); onClose(); }} className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium shadow-sm transition-colors"><Icons.Save className="w-4 h-4" /> 保存设置</button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- Main App ---
-        const App = () => {
-            const [finnhubKey, setFinnhubKey] = useState(() => localStorage.getItem('finnhubKey') || DEFAULT_FINNHUB_KEY);
-            const [exchangeRate, setExchangeRate] = useState(DEFAULT_EXCHANGE_RATE);
-            const [stocks, setStocks] = useState(() => INITIAL_PORTFOLIO.map(p => ({ ...p, currentPrice: p.cost, marketValue: p.cost * p.shares, pl: 0, plPercent: 0 })));
-            const [isRefreshing, setIsRefreshing] = useState(false);
-            const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-            const [lastUpdated, setLastUpdated] = useState(new Date());
-            const [marketStatus, setMarketStatus] = useState({ cn: false, us: false });
-
-            useEffect(() => {
-                const updateStatus = () => setMarketStatus(utils.checkMarketOpen());
-                updateStatus();
-                // Check every 10 seconds to update lights promptly
-                const t = setInterval(updateStatus, 10000);
-                return () => clearInterval(t);
-            }, []);
-
-            const fetchData = useCallback(async (force = false) => {
-                setIsRefreshing(true);
-                const { cn, us } = utils.checkMarketOpen();
-                const shouldFetchCN = force || cn;
-                const shouldFetchUS = force || us;
-
-                try {
-                    const [cnPrices, usPrices, rate] = await Promise.all([
-                        shouldFetchCN ? services.fetchCNStocks(INITIAL_PORTFOLIO) : Promise.resolve(new Map()),
-                        shouldFetchUS ? services.fetchUSStocks(INITIAL_PORTFOLIO, finnhubKey) : Promise.resolve(new Map()),
-                        (force || cn || us) ? services.fetchExchangeRate() : Promise.resolve(null)
-                    ]);
-
-                    if (rate) setExchangeRate(rate);
-
-                    setStocks(prev => prev.map(stock => {
-                        let newPrice = stock.currentPrice;
-                        if (stock.market === 'cn' && cnPrices.has(stock.code)) newPrice = cnPrices.get(stock.code);
-                        else if (stock.market === 'us' && usPrices.has(stock.code)) newPrice = usPrices.get(stock.code);
-
-                        const marketValue = newPrice * stock.shares;
-                        const costValue = stock.cost * stock.shares;
-                        const pl = marketValue - costValue;
-                        const plPercent = costValue !== 0 ? (pl / costValue) * 100 : 0;
-                        return { ...stock, currentPrice: newPrice, marketValue, pl, plPercent };
-                    }));
-                    setLastUpdated(new Date());
-                } catch (e) { console.error(e); } 
-                finally { setIsRefreshing(false); }
-            }, [finnhubKey]);
-
-            useEffect(() => {
-                fetchData(true);
-                const i = setInterval(() => fetchData(false), REFRESH_INTERVAL_MS);
-                return () => clearInterval(i);
-            }, [fetchData]);
-
-            const summary = useMemo(() => {
-                let usVal = 0, usCost = 0, cnVal = 0, cnCost = 0;
-                stocks.forEach(s => {
-                    if (s.market === 'us') { usVal += s.marketValue; usCost += (s.cost * s.shares); }
-                    else { cnVal += s.marketValue; cnCost += (s.cost * s.shares); }
-                });
-                const totalAsset = CASH_POOL_CNY + cnVal + (usVal * exchangeRate);
-                const totalCost = CASH_POOL_CNY + cnCost + (usCost * exchangeRate);
-                const totalPL = totalAsset - totalCost;
-                
-                return {
-                    asset: totalAsset, pl: totalPL, plPct: totalCost > 0 ? (totalPL/totalCost)*100 : 0,
-                    usVal, usCost, usPL: usVal - usCost, usPct: usCost > 0 ? ((usVal - usCost)/usCost)*100 : 0,
-                    cnVal, cnCost, cnPL: cnVal - cnCost, cnPct: cnCost > 0 ? ((cnVal - cnCost)/cnCost)*100 : 0,
-                    rate: exchangeRate
+                            } catch(e) {}
+                        }
+                    });
+                    resolve();
                 };
-            }, [stocks, exchangeRate]);
+                script.onerror = resolve; 
+                document.getElementById('scriptContainer').innerHTML = '';
+                document.getElementById('scriptContainer').appendChild(script);
+            });
+        }
 
-            return (
-                <div className="min-h-screen pb-12 font-sans text-gray-700">
-                    <Header onOpenSettings={() => setIsSettingsOpen(true)} onRefresh={() => fetchData(true)} isRefreshing={isRefreshing} marketStatus={marketStatus} />
-                    
-                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                            <SummaryCard 
-                                title="总资产净值 (CNY)" isPrimary
-                                mainValue={utils.formatCurrency(summary.asset, '¥')}
-                                subValue={utils.formatCurrency(summary.asset - summary.pl, '¥')}
-                                plValue={summary.pl}
-                                plText={`${summary.pl >= 0 ? '+' : ''}${utils.formatCurrency(summary.pl, '¥')} (${utils.formatPercent(summary.plPct)})`}
-                                icon={<Icons.Globe className="w-4 h-4" />}
-                                extraInfo={<div className="flex w-full justify-between opacity-80"><span>汇率: 1 USD = {summary.rate.toFixed(4)}</span><span>现金: ¥{CASH_POOL_CNY.toLocaleString()}</span></div>}
-                            />
-                            <SummaryCard 
-                                title="美股持仓 (USD)"
-                                mainValue={utils.formatCurrency(summary.usVal, '$')}
-                                subValue={utils.formatCurrency(summary.usCost, '$')}
-                                plValue={summary.usPL}
-                                plText={`${summary.usPL >= 0 ? '+' : ''}${utils.formatCurrency(summary.usPL, '$')} (${utils.formatPercent(summary.usPct)})`}
-                                icon={<Icons.DollarSign className="w-4 h-4" />}
-                            />
-                            <SummaryCard 
-                                title="A股持仓 (CNY)"
-                                mainValue={utils.formatCurrency(summary.cnVal, '¥')}
-                                subValue={utils.formatCurrency(summary.cnCost, '¥')}
-                                plValue={summary.cnPL}
-                                plText={`${summary.cnPL >= 0 ? '+' : ''}${utils.formatCurrency(summary.cnPL, '¥')} (${utils.formatPercent(summary.cnPct)})`}
-                                icon={<Icons.TrendingUp className="w-4 h-4" />}
-                            />
-                        </div>
+        // --- 美股接口 (Finnhub) ---
+        async function fetchUSStocks() {
+            if (!finnhubKey) return;
+            for (let p of portfolio) {
+                if (p.market === 'us') {
+                    try {
+                        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${p.code}&token=${finnhubKey}`);
+                        const data = await res.json();
+                        if (data.c) p.currentPrice = data.c;
+                    } catch(e) {}
+                }
+            }
+        }
 
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                                <h3 className="font-bold text-gray-800 flex items-center gap-2"><Icons.Activity className="w-4 h-4 text-gray-500" /> 持仓明细</h3>
-                                <div className="text-xs text-gray-400 font-mono">{lastUpdated.toLocaleTimeString('zh-CN', {hour12: false})}</div>
-                            </div>
-                            <div className="overflow-x-auto scrollbar-hide">
-                                <table className="w-full text-sm text-left whitespace-nowrap">
-                                    <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-100">
-                                        <tr>
-                                            <th className="px-6 py-4 font-medium">标的</th>
-                                            <th className="px-6 py-4 text-right font-medium hidden sm:table-cell">持仓</th>
-                                            <th className="px-6 py-4 text-right font-medium hidden sm:table-cell">成本</th>
-                                            <th className="px-6 py-4 text-right font-medium">现价</th>
-                                            <th className="px-6 py-4 text-right font-medium">市值</th>
-                                            <th className="px-6 py-4 text-right font-medium">盈亏</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {stocks.map(stock => {
-                                            const currency = stock.market === 'us' ? '$' : '¥';
-                                            const trendClass = utils.getTrendClass(stock.pl, 'text');
-                                            return (
-                                                <tr key={stock.code} className="hover:bg-gray-50/80 transition-colors">
-                                                    <td className="px-6 py-4">
-                                                        <div className="font-bold text-gray-900">{stock.name}</div>
-                                                        <div className="text-xs text-gray-400 font-mono mt-0.5">{stock.code}</div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right font-mono text-gray-600 hidden sm:table-cell">{stock.shares}</td>
-                                                    <td className="px-6 py-4 text-right font-mono text-gray-500 hidden sm:table-cell">{stock.cost.toFixed(3)}</td>
-                                                    <td className={`px-6 py-4 text-right font-mono font-bold ${trendClass}`}>{stock.currentPrice.toFixed(2)}</td>
-                                                    <td className="px-6 py-4 text-right font-mono font-medium text-gray-900">{currency}{stock.marketValue.toFixed(2)}</td>
-                                                    <td className={`px-6 py-4 text-right font-mono ${trendClass}`}>
-                                                        <div className="font-bold">{stock.pl > 0 ? '+' : ''}{stock.pl.toFixed(2)}</div>
-                                                        <div className="text-xs opacity-70">({stock.pl > 0 ? '+' : ''}{stock.plPercent.toFixed(2)}%)</div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </main>
+        // --- 核心渲染逻辑 ---
+        function renderAll() {
+            let totalCNY = cashCNY;
+            let usValUSD = 0, usCostUSD = 0;
+            let cnValCNY = 0, cnCostCNY = 0;
+            const tbody = document.getElementById('positionTableBody');
+            tbody.innerHTML = '';
 
-                    <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} currentKey={finnhubKey} onSave={(k) => { setFinnhubKey(k); localStorage.setItem('finnhubKey', k); setTimeout(() => fetchData(true), 100); }} />
-                </div>
-            );
-        };
+            portfolio.forEach(p => {
+                const current = p.currentPrice || p.cost;
+                const val = current * p.shares;
+                const costVal = p.cost * p.shares;
+                const pl = val - costVal;
+                const plPct = (pl / costVal) * 100;
+                
+                if (p.market === 'us') { usValUSD += val; usCostUSD += costVal; } 
+                else { cnValCNY += val; cnCostCNY += costVal; }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+                let plClass = 'text-flat';
+                let sign = '';
+                // 颜色逻辑：盈利=红, 亏损=绿 (符合A股习惯)
+                if (pl > 0) { sign='+'; plClass = 'text-up'; }
+                if (pl < 0) { sign=''; plClass = 'text-down'; }
+
+                const currency = p.market === 'us' ? '$' : '¥';
+                const costDisplay = p.cost.toFixed(2); 
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-white transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-gray-800">${p.name}</div>
+                            <div class="text-xs text-gray-400">${p.code}</div>
+                        </td>
+                        <td class="px-6 py-4 text-right font-mono">${p.shares}</td>
+                        <td class="px-6 py-4 text-right text-gray-500">${costDisplay}</td>
+                        <td class="px-6 py-4 text-right font-bold ${plClass}">${current.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-mono">${currency}${val.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right ${plClass}">
+                            ${sign}${pl.toFixed(2)} <span class="text-xs opacity-75">(${sign}${plPct.toFixed(2)}%)</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const usValCNY = usValUSD * usdRate;
+            const usCostCNY = usCostUSD * usdRate;
+            const finalAsset = totalCNY + cnValCNY + usValCNY;
+            const totalCost = totalCNY + cnCostCNY + usCostCNY;
+            
+            const totalPL = finalAsset - totalCost;
+            const totalPLPct = (totalPL / totalCost) * 100;
+
+            document.getElementById('totalAssetDisplay').innerText = '¥' + finalAsset.toLocaleString('zh-CN', {minimumFractionDigits: 2});
+            updatePLDisplay('totalPLDisplay', totalPL, totalPLPct, '¥');
+
+            document.getElementById('usMarketValue').innerText = '$' + usValUSD.toFixed(2);
+            document.getElementById('usCostDisplay').innerText = '$' + usCostUSD.toFixed(2);
+            updatePLDisplay('usPLDisplay', usValUSD - usCostUSD, (usValUSD - usCostUSD)/usCostUSD*100, '$');
+
+            document.getElementById('cnMarketValue').innerText = '¥' + cnValCNY.toFixed(2);
+            document.getElementById('cnCostDisplay').innerText = '¥' + cnCostCNY.toFixed(2);
+            updatePLDisplay('cnPLDisplay', cnValCNY - cnCostCNY, (cnValCNY - cnCostCNY)/cnCostCNY*100, '¥');
+        }
+
+        function updatePLDisplay(elementId, val, pct, currency) {
+            const el = document.getElementById(elementId);
+            const sign = val >= 0 ? '+' : '';
+            if (isNaN(pct) || !isFinite(pct)) pct = 0;
+            
+            el.innerText = `${sign}${currency}${val.toFixed(2)} (${sign}${pct.toFixed(2)}%)`;
+            
+            if (val > 0) el.className = elementId === 'totalPLDisplay' 
+                ? 'text-sm font-bold px-2 py-1 rounded bg-up' 
+                : 'text-xs font-bold px-2 py-0.5 rounded bg-red-100 text-red-600';
+            else if (val < 0) el.className = elementId === 'totalPLDisplay' 
+                ? 'text-sm font-bold px-2 py-1 rounded bg-down' 
+                : 'text-xs font-bold px-2 py-0.5 rounded bg-green-100 text-green-600';
+            else el.className = 'text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-500';
+        }
+
+        function manualRefresh() { fetchSmartData(true); }
+        function saveSettings() {
+            finnhubKey = document.getElementById('finnhubKey').value;
+            localStorage.setItem('finnhubKey', finnhubKey);
+            manualRefresh();
+        }
+        function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('hidden'); }
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
