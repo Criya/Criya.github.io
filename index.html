@@ -47,7 +47,7 @@
         </div>
         <div id="settingsPanel" class="hidden border-t border-gray-100 bg-gray-50 p-4">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
-                <input type="text" id="finnhubKey" placeholder="Finnhub Key (已内置默认值)" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+                <input type="text" id="finnhubKey" placeholder="Finnhub Key" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
                 <button onclick="saveSettings()" class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600">更新</button>
             </div>
         </div>
@@ -80,7 +80,7 @@
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 class="font-bold text-gray-800">持仓明细监控</h3>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs text-gray-400 border-l pl-2 ml-2" id="refreshStatus">数据源: 本地内嵌</span>
+                    <span class="text-xs text-gray-400 border-l pl-2 ml-2" id="refreshStatus">数据源: 静态内置</span>
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -105,38 +105,46 @@
 
     <script>
         // =========================================================
-        // 🟢 数据中心 (已更新 2025.11.28 收盘数据)
+        // 🔑 配置区
+        // =========================================================
+        const DEFAULT_FINNHUB_KEY = 'd4jul8pr01qgcb0vme30d4jul8pr01qgcb0vme3g'; 
+
+        // =========================================================
+        // 🟢 核心数据区 (数据源: 投资组合截图)
         // =========================================================
         
-        // 1. 在此填入你的 Finnhub Key (替换 '你的Key')，以便多端同步
-        const DEFAULT_FINNHUB_KEY = '你的Key'; 
-
-        // 2. CSV 数据块 (保持格式，直接粘贴更新)
-        const RAW_CSV_DATA = `
-market,code,name,shares,cost,currency
-us,QQQM,纳指100,2,243.78,USD
-us,SPYM,标普500,2,79.44,USD
-us,GLDM,黄金,2,82.76,USD
-us,SCHD,红利ETF,5,27.31,USD
-cn,sh601328,交通银行,100,7.67,CNY
-cn,sh601988,中国银行,100,6.21,CNY
-cn,sh601728,中国电信,100,6.86,CNY
-cash,CNY,资金池,1,3042.00,CNY
-`;
+        // 严格按照截图 image_fc353a.png 的 "平均买入价" 和 "数量" 录入
+        const portfolio = [
+            // --- 美股 (汇丰) ---
+            { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 241.58 }, 
+            { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.67 },  
+            { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.84 },    
+            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.11 }, 
+            
+            // --- A股 (中信) ---
+            { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.67 },
+            { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.21 },
+            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.86 }
+        ];
+        
+        let cashCNY = 3042.00; 
+        
         // =========================================================
 
-        let portfolio = [];
-        let cashCNY = 0;
         let usdRate = 7.25; 
         let finnhubKey = localStorage.getItem('finnhubKey') || DEFAULT_FINNHUB_KEY;
         let timer = null;
 
         window.onload = function() {
-            if (finnhubKey && finnhubKey !== '你的Key') {
-                document.getElementById('finnhubKey').value = finnhubKey;
+            // 将内置 Key 填入输入框（如果本地没存别的值）
+            if (!localStorage.getItem('finnhubKey')) {
+                document.getElementById('finnhubKey').value = DEFAULT_FINNHUB_KEY;
+            } else {
+                document.getElementById('finnhubKey').value = localStorage.getItem('finnhubKey');
             }
+            
             startClock();
-            parseEmbeddedCSV();
+            document.getElementById('cashDisplay').innerText = '¥' + cashCNY.toLocaleString();
             fetchSmartData(true);
             timer = setInterval(() => fetchSmartData(false), 10000);
         };
@@ -145,31 +153,6 @@ cash,CNY,资金池,1,3042.00,CNY
             setInterval(() => {
                 document.getElementById('realClock').innerText = new Date().toLocaleTimeString();
             }, 1000);
-        }
-
-        function parseEmbeddedCSV() {
-            try {
-                const lines = RAW_CSV_DATA.trim().split('\n');
-                portfolio = [];
-                cashCNY = 0;
-                for (let i = 1; i < lines.length; i++) {
-                    const row = lines[i].split(',');
-                    if (row.length < 6) continue;
-                    const item = {
-                        market: row[0].trim(),
-                        code: row[1].trim(),
-                        name: row[2].trim(),
-                        shares: parseFloat(row[3]),
-                        cost: parseFloat(row[4]),
-                        currency: row[5].trim()
-                    };
-                    if (item.market === 'cash') cashCNY = item.cost;
-                    else portfolio.push(item);
-                }
-                document.getElementById('cashDisplay').innerText = '¥' + cashCNY.toLocaleString();
-            } catch (err) {
-                console.error("CSV解析失败", err);
-            }
         }
 
         function checkMarketOpen() {
@@ -197,22 +180,24 @@ cash,CNY,资金池,1,3042.00,CNY
             document.getElementById('usStatusDot').className = status.us ? 'status-dot dot-live' : 'status-dot dot-sleep';
             
             const tasks = [];
+            const msgDom = document.getElementById('refreshStatus');
+
             if (forceAll || status.cn) tasks.push(fetchCNStocksTencent());
             if (forceAll || status.us) tasks.push(fetchUSStocks());
             if (forceAll || status.cn || status.us) tasks.push(fetchExchangeRate());
 
             if (tasks.length > 0) {
                 document.getElementById('refreshIcon').classList.add('spin');
-                document.getElementById('refreshStatus').innerText = "更新中...";
+                msgDom.innerText = "更新中...";
                 try {
                     await Promise.all(tasks);
                     renderAll();
-                    document.getElementById('refreshStatus').innerText = "更新于: " + new Date().toLocaleTimeString();
+                    msgDom.innerText = "更新于: " + new Date().toLocaleTimeString();
                 } catch(e) { console.error(e); } 
                 finally { document.getElementById('refreshIcon').classList.remove('spin'); }
             } else {
                 renderAll(); 
-                document.getElementById('refreshStatus').innerText = "休市中 (数据已缓存)";
+                msgDom.innerText = "休市中 (数据已缓存)";
             }
         }
 
@@ -253,7 +238,8 @@ cash,CNY,资金池,1,3042.00,CNY
         }
 
         async function fetchUSStocks() {
-            if (!finnhubKey || finnhubKey === '你的Key') return;
+            // 使用全局 Key
+            if (!finnhubKey) return;
             for (let p of portfolio) {
                 if (p.market === 'us') {
                     try {
