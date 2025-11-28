@@ -1,8 +1,8 @@
 market,code,name,shares,cost,currency
-us,QQQM,纳指100,2,243.78,USD
-us,SPYM,标普500,2,79.44,USD
-us,GLDM,黄金,2,82.76,USD
-us,SCHD,红利ETF,5,27.31,USD
+us,QQQM,纳指100,2,247.71,USD
+us,SPYM,标普500,2,79.43,USD
+us,GLDM,黄金,2,82.42,USD
+us,SCHD,红利ETF,5,27.23,USD
 cn,sh601328,交通银行,100,7.67,CNY
 cn,sh601988,中国银行,100,6.21,CNY
 cn,sh601728,中国电信,100,6.86,CNY

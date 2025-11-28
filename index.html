@@ -48,7 +48,7 @@
         </div>
         <div id="settingsPanel" class="hidden border-t border-gray-100 bg-gray-50 p-4">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 items-center">
-                <input type="text" id="finnhubKey" placeholder="Finnhub Key" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+                <input type="text" id="finnhubKey" placeholder="Finnhub Key (已内置默认值)" class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
                 <button onclick="saveSettings()" class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600">更新</button>
             </div>
         </div>
@@ -106,25 +106,32 @@
 
     <script>
         // =========================================================
-        // 🔑 配置区 (已内置你的 Key)
+        // 🔑 配置区
         // =========================================================
         const DEFAULT_FINNHUB_KEY = 'd4jul8pr01qgcb0vme30d4jul8pr01qgcb0vme3g'; 
 
         // =========================================================
-        // 🟢 核心数据区 (数据源: JIAHAO 口述终极校准)
+        // 🟢 核心数据区 (数据源: JIAHAO 最终确认版)
         // =========================================================
+        // 美股成本：严格按 247.71 / 79.43 / 82.42 / 27.23
         
+// =========================================================
+        // 🟢 核心数据区 (Gemini 2025/11/29 修正版)
+        // =========================================================
         const portfolio = [
-            // --- 美股 (汇丰) ---
+            // --- 美股 (汇丰) 成本已修正 ---
             { market: 'us', code: 'QQQM', name: '纳指100', shares: 2, cost: 247.71 }, 
             { market: 'us', code: 'SPYM', name: '标普500', shares: 2, cost: 79.43 },  
-            { market: 'us', code: 'GLDM', name: '黄金', shares: 2, cost: 82.42 },    
+            { market: 'us', code: 'GLDM', name: '黄金',    shares: 2, cost: 82.42 },    
             { market: 'us', code: 'SCHD', name: '红利ETF', shares: 5, cost: 27.23 }, 
             
-            // --- A股 (中信) ---
+            // --- A股 (中信) 成本保持不变 ---
             { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.67 },
             { market: 'cn', code: 'sh601988', name: '中国银行', shares: 100, cost: 6.21 },
-            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.86 }
+            { market: 'cn', code: 'sh601728', name: '中国电信', shares: 100, cost: 6.86 },
+            
+            // --- 资金池 (实时余额) ---
+            { market: 'cash', code: 'CNY', name: '资金池', shares: 1, cost: 3042.00 }
         ];
         
         let cashCNY = 3042.00; 
@@ -136,13 +143,9 @@
         let timer = null;
 
         window.onload = function() {
-            // 将内置 Key 填入输入框（如果本地没存别的值）
-            if (!localStorage.getItem('finnhubKey')) {
-                document.getElementById('finnhubKey').value = DEFAULT_FINNHUB_KEY;
-            } else {
-                document.getElementById('finnhubKey').value = localStorage.getItem('finnhubKey');
+            if (finnhubKey && finnhubKey !== '你的Key放在这里') {
+                document.getElementById('finnhubKey').value = finnhubKey;
             }
-            
             startClock();
             document.getElementById('cashDisplay').innerText = '¥' + cashCNY.toLocaleString();
             fetchSmartData(true);
@@ -238,7 +241,7 @@
         }
 
         async function fetchUSStocks() {
-            if (!finnhubKey) return;
+            if (!finnhubKey || finnhubKey === '你的Key放在这里') return;
             for (let p of portfolio) {
                 if (p.market === 'us') {
                     try {
