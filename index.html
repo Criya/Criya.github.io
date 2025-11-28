@@ -12,6 +12,7 @@
         .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
         .text-up { color: #ef4444; font-weight: bold; }   
         .text-down { color: #22c55e; font-weight: bold; } 
         .bg-up { background-color: #ef4444; color: white; }
@@ -105,21 +106,20 @@
 
     <script>
         // =========================================================
-        // 🔑 配置区
+        // 🔑 配置区 (已内置你的 Key)
         // =========================================================
         const DEFAULT_FINNHUB_KEY = 'd4jul8pr01qgcb0vme30d4jul8pr01qgcb0vme3g'; 
 
         // =========================================================
-        // 🟢 核心数据区 (数据源: 投资组合截图)
+        // 🟢 核心数据区 (数据源: JIAHAO 口述终极校准)
         // =========================================================
         
-        // 严格按照截图 image_fc353a.png 的 "平均买入价" 和 "数量" 录入
         const portfolio = [
             // --- 美股 (汇丰) ---
-            { market: 'us', code: 'QQQM', name: '纳指100', shares: 1, cost: 241.58 }, 
-            { market: 'us', code: 'SPYM', name: '标普500', shares: 1, cost: 78.67 },  
-            { market: 'us', code: 'GLDM', name: '黄金', shares: 1, cost: 81.84 },    
-            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 3, cost: 27.11 }, 
+            { market: 'us', code: 'QQQM', name: '纳指100', shares: 2, cost: 247.71 }, 
+            { market: 'us', code: 'SPYM', name: '标普500', shares: 2, cost: 79.43 },  
+            { market: 'us', code: 'GLDM', name: '黄金', shares: 2, cost: 82.42 },    
+            { market: 'us', code: 'SCHD', name: '红利ETF', shares: 5, cost: 27.23 }, 
             
             // --- A股 (中信) ---
             { market: 'cn', code: 'sh601328', name: '交通银行', shares: 100, cost: 7.67 },
@@ -238,7 +238,6 @@
         }
 
         async function fetchUSStocks() {
-            // 使用全局 Key
             if (!finnhubKey) return;
             for (let p of portfolio) {
                 if (p.market === 'us') {
